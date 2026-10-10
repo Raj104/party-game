@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
 import "./App.css";
+import "./GameSelection.css";
 
 type Player = {
   id: string;
@@ -10,11 +11,57 @@ type Player = {
   connected: boolean;
 };
 
+type GameId = "funny_answers" | "drawing_telephone";
+type GamePhase = "lobby" | "selection" | "instructions";
+
+type GameInfo = {
+  id: GameId;
+  title: string;
+  emoji: string;
+  description: string;
+  instructions: string[];
+};
+
+const GAMES: GameInfo[] = [
+  {
+    id: "funny_answers",
+    title: "Funny Answers",
+    emoji: "💬",
+    description: "Write hilarious responses and vote for your favorites.",
+    instructions: [
+      "Everyone will receive a funny prompt on their own device.",
+      "Write a creative answer before time runs out.",
+      "Read the anonymous answers and vote for your favorite.",
+      "Earn points from votes across multiple rounds!",
+    ],
+  },
+  {
+    id: "drawing_telephone",
+    title: "Drawing Telephone",
+    emoji: "🎨",
+    description: "Turn words into drawings and drawings into guesses.",
+    instructions: [
+      "Each player starts with a short written prompt.",
+      "The next player draws that prompt without using words.",
+      "Another player describes what they think the drawing shows.",
+      "Reveal the whole chain and enjoy the hilarious changes!",
+    ],
+  },
+];
+
+function findGame(gameId: GameId | null): GameInfo | undefined {
+  return GAMES.find((game) => game.id === gameId);
+}
+
 type Room = {
   code: string;
   players: Player[];
   displayCount: number;
+  phase: GamePhase;
+  selectedGame: GameId | null;
 };
+
+type ActionResponse = { ok: true } | { ok: false; error: string };
 
 type RoomResponse =
   | { ok: true; room: Room }
@@ -114,6 +161,7 @@ function App() {
 
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [gameActionBusy, setGameActionBusy] = useState(false);
 
   const [restoring, setRestoring] = useState(
     Boolean(!displayCode && loadSession())
@@ -186,6 +234,7 @@ function App() {
       setConnected(false);
       setRoom(null);
       setBusy(false);
+      setGameActionBusy(false);
 
       if (!displayCode) {
         setRestoring(Boolean(loadSession()));
@@ -234,6 +283,7 @@ function App() {
 
       setError("Cannot connect to the multiplayer server.");
       setBusy(false);
+      setGameActionBusy(false);
     }
 
     socket.on("connect", onConnect);
@@ -342,6 +392,28 @@ function App() {
   }
 
   // -------------------------------------
+  // HOST-ONLY GAME SELECTION ACTIONS
+  // -------------------------------------
+
+  function runGameAction(event: string, gameId?: GameId) {
+    if (!socket.connected || gameActionBusy) return;
+
+    setGameActionBusy(true);
+    setError("");
+
+    const onResponse = (response: ActionResponse) => {
+      setGameActionBusy(false);
+      if (!response.ok) setError(response.error);
+    };
+
+    if (gameId) {
+      socket.emit(event, gameId, onResponse);
+    } else {
+      socket.emit(event, onResponse);
+    }
+  }
+
+  // -------------------------------------
   // SHARED DISPLAY ACTIONS
   // -------------------------------------
 
@@ -380,8 +452,10 @@ function App() {
   }
 
   const currentPlayer = room?.players.find(
-  (player) => player.id === loadSession()?.playerId
-);
+    (player) => player.id === loadSession()?.playerId
+  );
+  const isHost = Boolean(currentPlayer?.isHost);
+  const selectedGame = room ? findGame(room.selectedGame) : undefined;
 
   // -------------------------------------
   // SHARED DISPLAY
@@ -405,6 +479,33 @@ function App() {
               Open the Game website on your phone
               and enter the room code!
             </p>
+
+            {room.phase === "selection" && (
+              <section className="game-phase-panel" aria-live="polite">
+                <p className="game-eyebrow">GAME SELECTION</p>
+                <h2>Choosing a mini-game</h2>
+                {selectedGame ? (
+                  <p className="game-big-choice">
+                    {selectedGame.emoji} {selectedGame.title}
+                  </p>
+                ) : (
+                  <p>Waiting for the host to pick a game...</p>
+                )}
+              </section>
+            )}
+
+            {room.phase === "instructions" && selectedGame && (
+              <section className="game-phase-panel" aria-live="polite">
+                <p className="game-eyebrow">HOW TO PLAY</p>
+                <h2>{selectedGame.emoji} {selectedGame.title}</h2>
+                <ol className="game-instructions">
+                  {selectedGame.instructions.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+                <p className="muted">Gameplay is coming in the next milestone.</p>
+              </section>
+            )}
 
             <section className="tv-players">
               <h2>
@@ -440,7 +541,11 @@ function App() {
 
             <div className="tv-waiting">
               <span className="pulse-dot" />
-              Waiting for the game to start...
+              {room.phase === "lobby"
+                ? "Waiting for the game to start..."
+                : room.phase === "selection"
+                  ? "Host is selecting a game..."
+                  : "Get ready to play!"}
             </div>
           </div>
         ) : (
@@ -617,6 +722,108 @@ function App() {
               ))}
             </div>
           </div>
+
+          <section className="game-phase-panel" aria-live="polite">
+            {room.phase === "lobby" && (
+              <>
+                <p className="game-eyebrow">LOBBY</p>
+                <h3>Ready for a mini-game?</h3>
+                {isHost ? (
+                  <button
+                    className="primary"
+                    onClick={() => runGameAction("open_game_selection")}
+                    disabled={!connected || gameActionBusy}
+                  >
+                    Choose a Game
+                  </button>
+                ) : (
+                  <p className="muted">Waiting for the host to choose a game...</p>
+                )}
+              </>
+            )}
+
+            {room.phase === "selection" && (
+              <>
+                <p className="game-eyebrow">GAME SELECTION</p>
+                <h3>Pick a mini-game</h3>
+                <div className="game-card-grid">
+                  {GAMES.map((game) => (
+                    <button
+                      type="button"
+                      key={game.id}
+                      className={
+                        "game-choice-card" +
+                        (room.selectedGame === game.id ? " game-choice-selected" : "")
+                      }
+                      onClick={() => runGameAction("select_game", game.id)}
+                      disabled={!isHost || !connected || gameActionBusy}
+                      aria-pressed={room.selectedGame === game.id}
+                    >
+                      <span className="game-choice-emoji">{game.emoji}</span>
+                      <strong>{game.title}</strong>
+                      <span>{game.description}</span>
+                      {room.selectedGame === game.id && (
+                        <span className="game-selected-label">✓ Selected</span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                {isHost ? (
+                  <div className="game-phase-actions">
+                    <button
+                      className="primary"
+                      onClick={() => runGameAction("show_game_instructions")}
+                      disabled={!connected || gameActionBusy || !room.selectedGame}
+                    >
+                      Show Instructions
+                    </button>
+                    <button
+                      className="secondary"
+                      onClick={() => runGameAction("return_to_lobby")}
+                      disabled={!connected || gameActionBusy}
+                    >
+                      Back to Lobby
+                    </button>
+                  </div>
+                ) : (
+                  <p className="muted">The host is choosing the next game...</p>
+                )}
+              </>
+            )}
+
+            {room.phase === "instructions" && selectedGame && (
+              <>
+                <p className="game-eyebrow">HOW TO PLAY</p>
+                <h3>{selectedGame.emoji} {selectedGame.title}</h3>
+                <ol className="game-instructions">
+                  {selectedGame.instructions.map((step) => (
+                    <li key={step}>{step}</li>
+                  ))}
+                </ol>
+                <p className="muted">
+                  The actual gameplay comes in our next milestone.
+                </p>
+                {isHost && (
+                  <div className="game-phase-actions">
+                    <button
+                      className="secondary"
+                      onClick={() => runGameAction("back_to_game_selection")}
+                      disabled={!connected || gameActionBusy}
+                    >
+                      Change Game
+                    </button>
+                    <button
+                      className="secondary"
+                      onClick={() => runGameAction("return_to_lobby")}
+                      disabled={!connected || gameActionBusy}
+                    >
+                      Back to Lobby
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </section>
 
           {currentPlayer?.isHost ? (
             <>
