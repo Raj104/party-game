@@ -1,0 +1,110 @@
+/* TV screen foundation and basic lobby presentation. */
+/* TV: use the SAME light/dark tokens, much larger type, full landscape canvas. */
+.tv-screen { min-height: 100dvh; width: 100%; padding: clamp(22px,2.3vw,48px) clamp(24px,4vw,90px); background: var(--fff-bg); color: var(--fff-ink); display: flex; gap: 0; font-family: inherit; }
+.tv-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; border-bottom: 2px solid var(--fff-border); }
+.tv-brand { display: flex; align-items: baseline; gap: 15px; }
+.tv-brand > strong { font-size: clamp(2rem,3vw,3.6rem); font-weight: 1000; letter-spacing: -.09em; line-height: 1; text-decoration: underline; text-decoration-color: var(--fff-coral); text-decoration-thickness: 5px; text-underline-offset: 8px; }
+.tv-brand > span { font-size: clamp(.7rem,.9vw,1.05rem); letter-spacing: .1em; font-weight: 850; }
+.tv-header-actions { display: flex; align-items: center; gap: 18px; }
+.tv-room-code { font-size: clamp(.9rem,1.2vw,1.3rem); }
+.tv-room-code strong { font-size: clamp(1.2rem,1.8vw,1.8rem); margin-left: 6px; }
+.tv-theme-choice select { width: auto; border: 1px solid var(--fff-border); background: var(--fff-paper); color: var(--fff-ink); border-radius: 8px; padding: 7px 10px; }
+.tv-screen .tv-content { width: 100%; max-width: none; flex: 1; padding: clamp(22px,3vw,46px) 0; margin: 0; min-height: 0; text-align: left; gap: 24px; }
+.tv-content--game { display: block; }
+.tv-content--lobby { display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,.9fr); align-content: center; align-items: center; gap: clamp(40px,4vw,90px); }
+.tv-lobby-hero .game-eyebrow { font-size: 1rem; }
+.tv-lobby-hero h1 { font-size: clamp(3rem,5.6vw,7rem); letter-spacing: -.06em; line-height: 1.07; margin: 10px 0 20px; }
+.tv-lobby-hero p { font-size: clamp(1.2rem,1.7vw,2rem); }
+.tv-lobby-code { font-weight: 900; letter-spacing: -.04em; background: var(--fff-accent); color: var(--fff-accent-ink); border: 2px solid var(--fff-border); border-radius: 14px; padding: 12px 28px; display: inline-block; overflow-wrap: anywhere; }
+.tv-lobby-hero small { display: block; margin-top: 20px; color: var(--fff-quiet); font-size: 1rem; }
+.tv-lobby-side { background: var(--fff-paper); border: 2px solid var(--fff-border); padding: clamp(20px,2.5vw,40px); border-radius: 14px; }
+.tv-player-grid { display: grid; gap: 12px; width: 100%; }
+.tv-player { background: var(--fff-muted-paper); border: 1px solid var(--fff-border); border-radius: 9px; font-size: clamp(1rem,1.3vw,1.5rem); }
+.tv-picked { font-size: clamp(1.3rem,2vw,2.2rem); font-weight: 850; margin-top: 28px; }
+.tv-waiting { font-size: clamp(1.1rem,1.5vw,1.6rem); color: var(--fff-quiet); }
+.tv-footer { font-size: 1.25rem; font-weight: 850; color: var(--fff-quiet); margin: 0; text-align: right; letter-spacing: 0.05em; }
+.tv-content--unavailable { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center !important; }
+.tv-content--unavailable h1 { font-size: clamp(3rem,5vw,5.5rem); }
+.tv-content--unavailable p { font-size: 1.3rem; }
+.tv-connection-hint { color: var(--fff-quiet); }
+.tv-screen .funny-tv-game { display: grid; gap: 18px; height: 100%; }
+.tv-screen .funny-board { width: 100%; max-width: none; margin: 0; padding: 0; border: 0; background: transparent; display: flex; flex-direction: column; justify-content: center; }
+.tv-screen .funny-board-top { margin-bottom: clamp(10px,2vw,30px); }
+.tv-screen .funny-board-top .game-eyebrow { font-size: clamp(1rem,1.6vw,1.8rem); color: var(--fff-quiet); }
+.tv-screen .funny-time { font-size: clamp(1.3rem,2.5vw,2.6rem); padding: 10px 20px; background: var(--fff-accent); color: var(--fff-accent-ink); border: 1px solid var(--fff-border); }
+.tv-screen .funny-stage-label { font-size: clamp(1rem,1.5vw,1.6rem); }
+.tv-screen .funny-prompt { font-size: clamp(3.5rem,6vw,8rem); line-height: 1.06; letter-spacing: -.055em; margin: 22px auto 30px; max-width: 26ch; text-align: center; overflow-wrap: anywhere; }
+.tv-screen .funny-board--submission .funny-status, .tv-screen .funny-board--voting .funny-status-text, .tv-screen .funny-board--review .funny-status-text { margin: 0 auto; font-size: clamp(1.4rem,2vw,2.5rem); text-align: center; }
+.tv-screen .funny-board--submission .status-track { height: 18px; width: min(68vw,900px); }
+.tv-screen .funny-board--reveal .funny-prompt { font-size: clamp(2rem,3.4vw,4.1rem); max-width: 35ch; }
+.tv-screen .funny-board--review .funny-prompt { font-size: clamp(1.9rem,3vw,3.6rem); }
+.tv-screen .funny-reveal-area { gap: 20px; }
+.tv-screen .funny-spotlight { min-height: clamp(230px,37vh,540px); width: min(100%,1120px); padding: clamp(20px,3vw,60px); }
+.tv-screen .funny-spotlight strong { font-size: clamp(2.9rem,5vw,6.6rem); }
+.tv-screen .funny-revealed-rail > div { max-width: 310px; font-size: 1rem; }
+.tv-screen .funny-answers-grid--board { grid-template-columns: repeat(auto-fit,minmax(min(100%,250px),1fr)); }
+.tv-screen .funny-answers-grid--board .funny-answer-card { background: var(--fff-muted-paper); color: var(--fff-ink); border: 2px solid var(--fff-border); min-height: 125px; padding: 20px; }
+.tv-screen .funny-answer-card p { font-size: clamp(1.4rem,2vw,2.5rem); }
+.tv-screen .funny-answers-grid--results { grid-template-columns: repeat(auto-fit,minmax(min(100%,340px),1fr)); gap: clamp(12px,1.6vw,25px); }
+.tv-screen .funny-answers-grid--results .funny-answer-card { color: var(--fff-ink); border: 2px solid var(--fff-border); background: var(--fff-muted-paper); padding: 20px; }
+.tv-screen .funny-board--results .results-heading h2, .tv-screen .funny-board--finished .final-heading h2 { font-size: clamp(3.3rem,5.2vw,6.5rem); }
+.tv-screen .funny-standings { width: min(100%,1100px); }
+.tv-screen .funny-standing { min-height: 80px; padding: 16px 24px; }
+.tv-screen .funny-standing .character-token { width: 50px; height: 50px; }
+.tv-screen .funny-standing .player-identity { font-size: clamp(1.5rem,2.3vw,2.6rem); }
+.tv-screen .funny-standing > strong { font-size: clamp(1.6rem,2.3vw,2.7rem); }
+.tv-hint { margin: 0; font-size: clamp(1.2rem,1.6vw,1.9rem); font-weight: 650; text-align: center; color: var(--fff-quiet); }
+
+@media (min-width: 1100px) and (min-height: 750px) {
+  .app.app--room .room-view--playing { min-height: calc(100dvh - 190px); }
+  .app.app--room .room-view--playing .room-main-content { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+}
+@media (max-width: 900px) {
+  .app.app--room, .app.app--home { padding: 14px 14px 28px; }
+  .app.app--room .funny-player-game:has(.funny-board--submission),
+  .app.app--room .funny-player-game:has(.funny-board--voting) { display: flex; min-height: 0; }
+  .app.app--room .funny-player-game:has(.funny-board--submission) .funny-interaction,
+  .app.app--room .funny-player-game:has(.funny-board--voting) .funny-interaction { margin-top: 0; }
+  .selection-heading { display: block; }
+  .tv-content--lobby { grid-template-columns: 1fr; }
+  .tv-screen .funny-prompt { font-size: clamp(2rem,5vw,4.3rem); }
+}
+@media (max-width: 600px) {
+  .app.app--room .panel.room-view { padding: 12px; }
+  .room-label, .room-player-count { display: none; }
+  .app.app--room .room-code-compact { font-size: clamp(1rem,5vw,1.45rem); }
+  .app.app--room .room-roster { padding: 9px 11px; }
+  .app.app--room .game-phase-panel { padding: 14px 0; }
+  .app.app--room .game-phase-panel h2 { font-size: 2.1rem; }
+  .app.app--room .game-card-grid { grid-template-columns: 1fr; }
+  .app.app--room .game-choice-card { min-height: 130px; padding: 16px; }
+  .app.app--room .game-choice-card strong { font-size: 1.5rem; }
+  .app.app--room .lobby-start-panel { flex-direction: column; align-items: stretch; min-height: 0; }
+  .app.app--room .funny-setup--inline { display: block; padding: 14px; }
+  .funny-setup-actions { margin-top: 20px; }
+  .funny-setup-actions .primary { flex: 1; }
+  .app.app--room .funny-board { padding: 5px 0; }
+  .app.app--room .funny-board .funny-prompt { font-size: clamp(1.8rem,7vw,2.7rem); line-height: 1.13; margin: 10px 0 15px; }
+  .app.app--room .funny-interaction { padding: 13px; gap: 10px; }
+  .app.app--room .funny-interaction textarea { min-height: 145px; font-size: 1.1rem; }
+  .funny-interaction .primary { width: 100%; }
+  .funny-interaction .funny-vote-list { grid-template-columns: 1fr; }
+  .app.app--room .funny-vote-choice { min-height: 58px; padding: 12px; font-size: 1.02rem; }
+  .funny-revealed-rail > div { max-width: 230px; }
+  .funny-spotlight { min-height: 150px; padding: 18px; }
+  .funny-spotlight strong { font-size: 1.5rem; }
+  .funny-answers-grid--results { grid-template-columns: 1fr; }
+  .funny-standing { min-height: 58px; padding: 8px; }
+  .standing-position { flex-basis: 20px; font-size: 1rem; }
+  .funny-standing > .player-identity { font-size: 1rem; }
+  .funny-standing .character-token { width: 30px; height: 30px; }
+  .funny-winner { font-size: 1.3rem; }
+  .tv-header .tv-brand > span { display: none; }
+  .tv-screen { padding: 18px; }
+  .tv-header { gap: 10px; }
+  .tv-room-code { font-size: .6rem; }
+  .tv-room-code strong { font-size: .9rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .funny-spotlight, .status-track i { transition: none; transform: none; }
+}

@@ -1,7 +1,10 @@
-import { randomBytes, randomInt, randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
 import type { Server, Socket } from "socket.io";
-import { RECONNECT_GRACE_MS } from "../config";
-import type { Player, Room } from "../types";
+import { EMPTY_ROOM_IDLE_MS } from "../config";
+import { privateFunny, publicFunny, stopFunnyTimer } from "../games/funnyState";
+import { onFunnyHostDisconnected, onFunnyRosterChange } from "../games/funnyEngine";
+import type { CharacterId, Player, Room } from "../types";
+import { generateFriendlyCode } from "./roomCodes";
 
 export const rooms = new Map<string, Room>();
 
@@ -17,17 +20,19 @@ export function nameTaken(room: Room, name: string): boolean {
 }
 
 export function generateRoomCode(): string {
-  let code: string;
-  do {
-    code = Array.from({ length: 4 }, () => String.fromCharCode(65 + randomInt(26))).join("");
-  } while (rooms.has(code));
-  return code;
+  return generateFriendlyCode(new Set(rooms.keys()));
 }
 
-export function createPlayer(name: string, socket: Socket): Player {
+const characters: readonly CharacterId[] = ["scribble", "bolt", "odd-one", "stripe", "orbit", "blob"];
+export function validateCharacter(value: unknown): CharacterId {
+  return characters.includes(value as CharacterId) ? value as CharacterId : "scribble";
+}
+
+export function createPlayer(name: string, socket: Socket, character: CharacterId = "scribble"): Player {
   return {
     id: randomUUID(),
     name,
+    character,
     token: randomBytes(32).toString("hex"),
     socketId: socket.id,
   };
@@ -40,46 +45,95 @@ export function publicRoom(room: Room) {
     players: room.players.map((player, index) => ({
       id: player.id,
       name: player.name,
+      character: player.character,
       isHost: index === 0,
       connected: player.socketId !== null,
     })),
     displayCount: room.displays.size,
     phase: room.phase,
     selectedGame: room.selectedGame,
+    selectedRounds: room.selectedRounds,
+    serverNow: Date.now(),
+    funny: publicFunny(room),
+    lastScoreboard: room.lastScoreboard,
   };
 }
 
 export function updateRoom(io: Server, room: Room) {
   io.to(room.code).emit("room_updated", publicRoom(room));
-}
-
-export function removePlayer(io: Server, room: Room, playerId: string) {
-  const player = room.players.find((entry) => entry.id === playerId);
-  if (!player) return;
-  if (player.reconnectTimer) clearTimeout(player.reconnectTimer);
-
-  room.players = room.players.filter((entry) => entry.id !== playerId);
-  if (room.players.length === 0) {
-    io.to(room.code).emit("room_closed");
-    for (const displayId of room.displays) {
-      const displaySocket = io.sockets.sockets.get(displayId);
-      if (displaySocket) {
-        displaySocket.leave(room.code);
-        delete displaySocket.data.roomCode;
-        delete displaySocket.data.role;
-        delete displaySocket.data.playerId;
-      }
+  for (const player of room.players) {
+    if (player.socketId) {
+      io.to(player.socketId).emit("funny_private_updated", privateFunny(room.funny, player.id));
     }
-    room.displays.clear();
-    rooms.delete(room.code);
-    console.log(`Room ${room.code} closed`);
-  } else {
-    updateRoom(io, room);
   }
 }
 
-// Unexpected disconnections reserve a player's position until the grace period expires.
-// Intentional "Leave Room" removes that player immediately.
+/** Preserve unexpected disconnects briefly for reconnect; never retain an abandoned game for hours. */
+export function refreshRoomIdleTimer(io: Server, room: Room) {
+  if (room.idleTimer) clearTimeout(room.idleTimer);
+  room.idleTimer = undefined;
+  if (room.players.some(player => player.socketId !== null)) return;
+  room.idleTimer = setTimeout(() => {
+    if (rooms.get(room.code) !== room || room.players.some(player => player.socketId !== null)) return;
+    closeRoom(io, room);
+    console.log(`Room ${room.code} closed after prolonged inactivity`);
+  }, EMPTY_ROOM_IDLE_MS);
+  room.idleTimer.unref?.();
+}
+
+function closeRoom(io: Server, room: Room) {
+  if (room.idleTimer) clearTimeout(room.idleTimer);
+  stopFunnyTimer(room.funny);
+  io.to(room.code).emit("room_closed");
+  for (const displayId of room.displays) {
+    const displaySocket = io.sockets.sockets.get(displayId);
+    if (displaySocket) {
+      displaySocket.leave(room.code);
+      delete displaySocket.data.roomCode;
+      delete displaySocket.data.role;
+      delete displaySocket.data.playerId;
+    }
+  }
+  room.displays.clear();
+  rooms.delete(room.code);
+  console.log(`Room ${room.code} closed`);
+}
+
+/** If the host goes offline, promote a connected player so the game isn't stuck. */
+export function promoteConnectedHost(room: Room) {
+  if (room.players[0]?.socketId !== null) return;
+  const index = room.players.findIndex(p => p.socketId !== null);
+  if (index > 0) room.players.unshift(room.players.splice(index, 1)[0]);
+}
+
+export function removePlayer(io: Server, room: Room, playerId: string) {
+  if (!room.players.some(entry => entry.id === playerId)) return;
+  const hostIsLeaving = room.players[0]?.id === playerId;
+  room.players = room.players.filter(entry => entry.id !== playerId);
+  // The last-game scoreboard belongs to the CURRENT room roster. A player
+  // who leaves or is kicked must not linger in the scores when the host picks
+  // another game. Unexpected disconnects are handled separately and retain
+  // their identities during the reconnect grace period.
+  if (room.lastScoreboard) {
+    room.lastScoreboard.scores = room.lastScoreboard.scores.filter(score => score.id !== playerId);
+  }
+  // A deliberate departure by the final online player ends the party immediately,
+  // even when disconnected recovery identities remain in room.players.
+  if (room.players.length === 0 || room.players.every(player => player.socketId === null)) {
+    closeRoom(io, room);
+    return;
+  }
+  if (hostIsLeaving) {
+    onFunnyHostDisconnected(io, room);
+    promoteConnectedHost(room);
+  }
+  onFunnyRosterChange(io, room);
+  refreshRoomIdleTimer(io, room);
+  updateRoom(io, room);
+}
+
+// Intentional "Leave Room" removes a player. Unexpected disconnects retain
+// the identity until a host kicks it, they leave, or the short reconnect window expires.
 export function leaveRoom(io: Server, socket: Socket, grace = false) {
   const code = socket.data.roomCode as string | undefined;
   const role = socket.data.role as string | undefined;
@@ -101,24 +155,18 @@ export function leaveRoom(io: Server, socket: Socket, grace = false) {
   }
   if (role !== "player" || !playerId) return;
 
-  const player = room.players.find((entry) => entry.id === playerId);
-  // Prevent a replaced socket from removing the new owner's session.
+  const player = room.players.find(entry => entry.id === playerId);
+  // A socket replaced by another tab must never sign its replacement out.
   if (!player || player.socketId !== socket.id) return;
-
   player.socketId = null;
   if (!grace) {
     removePlayer(io, room, player.id);
     return;
   }
-
-  if (player.reconnectTimer) clearTimeout(player.reconnectTimer);
-  player.reconnectTimer = setTimeout(() => {
-    if (rooms.get(code) === room && player.socketId === null) {
-      removePlayer(io, room, player.id);
-      console.log(`${player.name} timed out of room ${code}`);
-    }
-  }, RECONNECT_GRACE_MS);
-
+  if (room.players[0]?.id === playerId) onFunnyHostDisconnected(io, room);
+  promoteConnectedHost(room);
+  onFunnyRosterChange(io, room);
+  refreshRoomIdleTimer(io, room);
   updateRoom(io, room);
-  console.log(`${player.name} disconnected from ${code}; spot reserved`);
+  console.log(`${player.name} disconnected from ${code}; identity retained`);
 }

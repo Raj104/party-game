@@ -1,0 +1,186 @@
+/* Dealt card reveal animation and waiting card. */
+/* Dealt-card reveal on players, tablets and shared TVs.
+   One anchored deck during reveal; on the last card, the same DOM cards
+   spread into a centered group with a FLIP animation (no extra packages). */
+.funny-reveal-deck {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(6px, .8vh, 12px);
+  margin: 0 auto;
+}
+.funny-reveal-deck-cards {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  align-content: center;
+  justify-content: center;
+  gap: clamp(9px, 1vw, 16px);
+  width: min(100%, 1500px);
+  min-height: clamp(195px, 25vh, 340px);
+  margin: 0 auto;
+}
+/* While dealing, all answers occupy ONE visual position. The rest of the
+   layout doesn't grow every time another card is revealed. */
+.funny-reveal-deck--stack .funny-reveal-deck-cards {
+  height: clamp(205px, 26vh, 330px);
+}
+.funny-reveal-deck .funny-reveal-card {
+  box-sizing: border-box;
+  background: var(--fff-muted-paper);
+  color: var(--fff-ink);
+  border: 1.5px solid var(--fff-border);
+  border-radius: 11px;
+  min-width: 0;
+  padding: clamp(12px, 1.1vw, 18px);
+  overflow-wrap: anywhere;
+}
+.funny-reveal-deck .funny-reveal-card p,
+.app.app--room .funny-reveal-deck .funny-reveal-card p,
+.tv-screen .funny-reveal-deck .funny-reveal-card p {
+  font-size: clamp(1rem, 1.55vw, 1.65rem);
+  line-height: 1.27;
+  margin: 8px 0 0;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.funny-reveal-deck--stack .funny-reveal-card {
+  position: absolute;
+  width: min(90%, 480px);
+  max-width: calc(100% - 10px);
+  height: clamp(166px, 23vh, 270px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  box-shadow: 5px 7px 0 var(--fff-paper), 6px 8px 0 var(--fff-border);
+}
+.funny-reveal-deck--stack .funny-reveal-card p {
+  max-height: 100%;
+  overflow: auto;
+}
+.funny-reveal-deck--stack .funny-reveal-card:last-child {
+  animation: fff-deal-answer .28s cubic-bezier(.22,.9,.45,1.3) both;
+}
+@keyframes fff-deal-answer {
+  from { transform: translate(-50%, calc(-50% - 25px)) scale(.93); opacity: .15; }
+  to   { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+/* On completion, the cards remain in their final positions as review begins.
+   The JS measures their original pile positions and flies each into place. */
+.funny-reveal-deck--spread .funny-reveal-card {
+  position: relative;
+  flex: 0 1 clamp(185px, 17vw, 270px);
+  max-width: 100%;
+  min-height: clamp(115px, 15vh, 175px);
+  transform: none;
+  box-shadow: 3px 4px 0 var(--fff-paper);
+}
+.funny-reveal-deck .funny-reveal-count { margin: 0; text-align: center; }
+
+/* Tablets: two answers per row; phones: one, with natural vertical scrolling. */
+@media (min-width: 701px) and (max-width: 1100px) {
+  .funny-reveal-deck--spread .funny-reveal-card {
+    flex-basis: min(46%, 360px);
+  }
+}
+@media (max-width: 700px) {
+  .funny-reveal-deck--stack .funny-reveal-deck-cards {
+    min-height: 185px;
+    height: clamp(185px, 26vh, 260px);
+  }
+  .funny-reveal-deck--stack .funny-reveal-card {
+    width: min(92%, 420px);
+    height: clamp(150px, 23vh, 225px);
+  }
+  .funny-reveal-deck--spread .funny-reveal-card {
+    flex: 0 1 min(100%, 420px);
+    min-height: 90px;
+  }
+  .funny-reveal-deck .funny-reveal-card p,
+  .app.app--room .funny-reveal-deck .funny-reveal-card p {
+    font-size: 1.08rem;
+  }
+}
+/* TV fit-to-screen remains in charge of overall scaling and uses the same deck. */
+.tv-screen--playing .funny-reveal-deck-cards { min-height: clamp(155px, 23vh, 285px); }
+.tv-screen--playing .funny-reveal-deck--stack .funny-reveal-deck-cards {
+  height: clamp(160px, 24vh, 295px);
+}
+.tv-screen--playing .funny-reveal-deck--stack .funny-reveal-card {
+  height: clamp(150px, 21vh, 265px);
+  width: min(88%, 620px);
+}
+.tv-screen--playing .funny-reveal-deck--spread .funny-reveal-card {
+  flex-basis: clamp(150px, 16vw, 270px);
+  min-height: clamp(100px, 13vh, 165px);
+}
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card p {
+  font-size: clamp(1.05rem, min(1.8vw, 2.8vh), 1.85rem);
+}
+/* Fit each menu to its longest label, including 'Reveal next'. */
+.app.app--room .funny-timer-menu {
+  width: max-content;
+  min-width: 0;
+  max-width: calc(100vw - 28px);
+  padding: 4px;
+  gap: 1px;
+}
+.app.app--room .funny-timer-menu button {
+  width: auto;
+  min-height: 32px;
+  padding: 6px 9px;
+  white-space: nowrap;
+  text-align: left;
+}
+@media (prefers-reduced-motion: reduce) {
+  .funny-reveal-deck .funny-reveal-card { animation: none; transition: none; }
+}
+/* Override earlier global room/TV answer-card padding only for the reveal deck. */
+.app.app--room .funny-reveal-deck .funny-reveal-card,
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card {
+  padding: clamp(12px, 1.1vw, 18px);
+}
+@media (max-width: 700px) {
+  .app.app--room .funny-reveal-deck .funny-reveal-card { padding: 13px; }
+}
+
+/* Keep the pre-reveal waiting card, but remove it as soon as
+   the first answer is dealt. It occupies the same pile slot as the answers. */
+.funny-reveal-deck--stack .funny-reveal-wait-card {
+  position: absolute;
+  box-sizing: border-box;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: min(90%, 480px);
+  max-width: calc(100% - 10px);
+  height: clamp(166px, 23vh, 270px);
+  padding: 16px;
+  border: 1.5px solid var(--fff-border);
+  background: var(--fff-paper);
+  color: var(--fff-quiet);
+  box-shadow: 5px 7px 0 var(--fff-muted-paper);
+  font-size: clamp(1.3rem, 2vw, 2rem);
+  line-height: 1.25;
+  font-weight: 700;
+}
+@media (max-width: 700px) {
+  .funny-reveal-deck--stack .funny-reveal-wait-card {
+    width: min(92%, 420px);
+    height: clamp(150px, 23vh, 225px);
+  }
+}
+.tv-screen--playing .funny-reveal-deck--stack .funny-reveal-wait-card {
+  width: min(88%, 620px);
+  height: clamp(150px, 21vh, 265px);
+}

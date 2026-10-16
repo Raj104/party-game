@@ -1,0 +1,110 @@
+/* Game details panels and initial carousel behavior. */
+/* in-panel game details, not a popup or a second panel below cards. */
+.app.app--room .game-carousel {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc((100% - 18px) / 2);
+  grid-template-columns: none;
+  gap: 18px;
+  width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 2px;
+  scrollbar-width: none;
+  padding: 3px 2px 10px;
+}
+.game-carousel::-webkit-scrollbar { display: none; }
+.app.app--room .game-carousel > .game-choice-card {
+  width: 100%;
+  min-width: 0;
+  scroll-snap-align: start;
+}
+.game-carousel-controls { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
+.game-carousel-controls button { min-width: 43px; min-height: 43px; border-radius: 9px; font-weight: 800; }
+.game-carousel-page { font-size: .85rem; color: var(--fff-quiet); white-space: nowrap; }
+.game-pick-banner {
+  width: 100%; display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; flex-wrap: wrap; border: 1.5px solid var(--fff-border); border-radius: 9px;
+  background: var(--fff-muted-paper); color: var(--fff-ink);
+  text-align: left; padding: 12px 17px; font-size: clamp(.88rem, 1vw, 1.06rem);
+  cursor: pointer;
+}
+.game-pick-banner > span:last-child { font-weight: 800; }
+
+/* The color belongs to the game, not to a modal. This deliberately remains
+   readable in light and dark mode: the text colors are paired with the card. */
+.game-detail-page {
+  --game-surface: var(--fff-coral);
+  --game-text: #25211f;
+  --game-faded: #493a33;
+  --game-line: rgba(42, 34, 29, .33);
+  background: var(--game-surface);
+  color: var(--game-text);
+  border: 2px solid var(--fff-border);
+  border-radius: 13px;
+  padding: clamp(18px, 3vw, 44px);
+  min-height: min(58vh, 540px);
+  text-align: left;
+}
+.game-detail-page--drawing_telephone {
+  --game-surface: var(--fff-muted-paper);
+  --game-text: var(--fff-ink);
+  --game-faded: var(--fff-quiet);
+  --game-line: var(--fff-border);
+}
+.game-detail-topline, .game-detail-columns, .game-detail-footer { color: var(--game-text); }
+.game-detail-topline { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: clamp(24px, 3vw, 42px); }
+.game-detail-back { background: transparent; color: var(--game-text); border: 1.5px solid var(--game-line); border-radius: 50px; padding: 9px 18px; font-weight: 750; cursor: pointer; min-height: 43px; }
+.game-detail-overline { font-size: .79rem; letter-spacing: .13em; font-weight: 900; }
+.game-detail-columns { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: clamp(25px, 5vw, 90px); }
+.game-detail-identity { min-width: 0; }
+.game-detail-icon { display: grid; place-items: center; width: 64px; height: 64px; background: #eab65c; border: 1.5px solid #463b29; border-radius: 10px; font-size: 2.4rem; color: #262321; margin-bottom: 16px; }
+.app.app--room .game-detail-identity h2 { color: var(--game-text); font-size: clamp(2rem, 3vw, 3.15rem); letter-spacing: -.055em; text-align: left; margin: 0 0 12px; line-height: 1.04; }
+.game-detail-identity p { margin: 0 0 12px; color: var(--game-faded); font-size: clamp(1.02rem, 1.2vw, 1.28rem); line-height: 1.4; }
+.game-detail-count { font-size: .96rem; color: var(--game-faded); font-weight: 700; }
+.game-detail-rules h3 { margin: 0 0 14px; font-size: clamp(1.32rem, 1.7vw, 1.8rem); color: var(--game-text); }
+.game-detail-rules ul { margin: 0; padding-left: 1.45rem; text-align: left; list-style: disc; }
+.game-detail-rules li { display: list-item; list-style: disc; margin: 0 0 12px; padding-left: .15rem; color: var(--game-text); font-size: clamp(1rem, 1.07vw, 1.15rem); line-height: 1.5; text-align: left; }
+.game-detail-footer { border-top: 1.5px solid var(--game-line); margin-top: clamp(24px, 3vw, 40px); padding-top: 24px; display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; }
+.game-detail-page .funny-setup--integrated { width: 100%; min-width: 0; display: flex; justify-content: space-between; align-items: end; gap: 22px; flex-wrap: wrap; padding: 0; margin: 0; border: 0; background: transparent; color: var(--game-text); }
+.game-detail-rounds { display: grid; gap: 9px; }
+.game-detail-setting-label { font-size: 1.1rem; font-weight: 850; }
+.game-detail-round-choice { display: flex; gap: 10px; border: 0; padding: 0; margin: 0; min-width: 0; }
+.game-detail-round-option { border: 1.5px solid var(--game-line); border-radius: 60px; cursor: pointer; padding: 11px 18px; font-weight: 750; white-space: nowrap; color: var(--game-text); }
+.game-detail-round-option.is-active { background: #292724; color: #fdf8ee; border-color: #292724; }
+.game-detail-round-option input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.game-detail-round-option:has(input:focus-visible) { outline: 3px solid var(--fff-lilac); outline-offset: 3px; }
+.game-detail-round-option:has(input:disabled) { opacity: .6; cursor: wait; }
+.game-detail-online { color: var(--game-faded); font-size: .85rem; }
+.game-detail-readonly-rounds { font-size: 1.4rem; color: var(--game-text); }
+.game-detail-readonly-rounds small { font-size: .78rem; font-weight: 500; color: var(--game-faded); }
+.game-detail-start { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.game-detail-start .funny-warning { margin: 0; font-size: .9rem; color: #693222; }
+.game-detail-play { background: #282624; color: #fffaf0; border: 1.5px solid #282624; padding: 15px 28px; border-radius: 60px; font-size: 1.1rem; font-weight: 800; cursor: pointer; min-width: 190px; min-height: 52px; }
+.game-detail-play:disabled { opacity: .5; cursor: not-allowed; }
+.game-detail-wait, .game-detail-footer-note { margin: 0; color: var(--game-faded); font-size: 1.03rem; }
+.game-return-pick, .game-browse-other { background: transparent; color: var(--game-text); border: 1.5px solid var(--game-line); border-radius: 9px; font-weight: 800; padding: 12px 18px; cursor: pointer; }
+.game-return-pick { margin-left: auto; }
+@media (max-width: 850px) {
+  .game-detail-columns { grid-template-columns: 1fr; gap: 24px; }
+  .game-detail-topline { margin-bottom: 20px; }
+  .app.app--room .game-carousel { grid-auto-columns: min(85%, 410px); grid-template-columns: none; }
+}
+@media (max-width: 600px) {
+  .app.app--room .game-carousel { grid-auto-columns: calc(100% - 24px); }
+  .game-detail-page { padding: 18px; min-height: 0; }
+  .game-detail-footer { align-items: stretch; }
+  .game-detail-page .funny-setup--integrated { align-items: stretch; }
+  .game-detail-start, .game-detail-play { width: 100%; }
+  .game-detail-identity h2 { overflow-wrap: break-word; }
+  .game-detail-round-option { padding: 10px 15px; }
+}
+@media (prefers-reduced-motion: reduce) { .app.app--room .game-carousel { scroll-behavior: auto; } }
+
+/* Keep card and detail colors consistent, including when browsing locally. */
+.app.app--room .game-choice-card--funny_answers { background: var(--fff-coral); color: #25211f; }
+.app.app--room .game-choice-card--funny_answers small { color: #493a33; }
+@media (min-width: 851px) {
+  .game-carousel-controls--mobile-only { display: none; }
+}

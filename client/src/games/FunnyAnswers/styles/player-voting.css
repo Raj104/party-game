@@ -1,0 +1,54 @@
+/* Player voting panel arrangement and responsive layout. */
+/* Player voting layout correction (TV styles are deliberately untouched).
+   The voting prompt used the full-screen title size inside a narrow desktop grid column. */
+.app.app--room .funny-player-game:has(.funny-board--voting) .funny-board .funny-prompt {
+  font-size: clamp(1.85rem, 2.55vw, 3.1rem);
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+/* Spectators need no answer/vote input column. Give the public board full width. */
+.app.app--room .funny-player-game--spectator:has(.funny-board--submission),
+.app.app--room .funny-player-game--spectator:has(.funny-board--voting) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: clamp(12px, 1.5vw, 22px);
+}
+.app.app--room .funny-player-game--spectator .funny-board { width: 100%; }
+.app.app--room .funny-player-game--spectator .funny-board .funny-prompt {
+  font-size: clamp(1.85rem, 3.3vw, 3.7rem);
+  max-width: min(100%, 30ch);
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+.app.app--room .funny-player-game--spectator .funny-interaction {
+  margin-top: 0 !important;
+  padding: clamp(14px, 1.5vw, 22px);
+}
+/* At laptop / narrower desktop widths, reserve the full line for the prompt.
+   The normal one-column mobile layout continues unchanged. */
+@media (min-width: 901px) and (max-width: 1200px) {
+  .app.app--room .funny-player-game:has(.funny-board--voting),
+  .app.app--room .funny-player-game:has(.funny-board--submission) {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    gap: 16px;
+  }
+  .app.app--room .funny-player-game:has(.funny-board--voting) .funny-interaction,
+  .app.app--room .funny-player-game:has(.funny-board--submission) .funny-interaction {
+    margin-top: 0;
+    width: 100%;
+  }
+}
+@media (max-width: 600px) {
+  .app.app--room .funny-player-game:has(.funny-board--voting) .funny-board .funny-prompt,
+  .app.app--room .funny-player-game--spectator .funny-board .funny-prompt {
+    font-size: clamp(1.8rem, 7vw, 2.7rem);
+    line-height: 1.13;
+    max-width: 100%;
+  }
+}

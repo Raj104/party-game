@@ -1,0 +1,121 @@
+/* Answer-card typography, automatic fitting, and mobile centering. */
+/* Bigger, truly centered answer text on tablets and everywhere.
+   The JS fitting helper only shrinks the span if it would overflow the card.
+   Leave card dimensions, reveal animations, and voting layout untouched. */
+/* Only non-deck answer tiles need a positioning context for their labels.
+   IMPORTANT: reveal-stack cards must retain `position: absolute` from the dealt-card layout;
+   giving every tile `position: relative` makes the stacked cards flow down
+   the page and overlap the question, especially on tablets and phones. */
+.app.app--room .funny-answer-tile:not(.funny-reveal-card),
+.tv-screen--playing .funny-answer-tile:not(.funny-reveal-card) {
+  position: relative;
+}
+/* Remove the corner number from the layout, so answer text is centered on the
+   card itself instead of being pushed downward by the number's line height. */
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile > .funny-answer-number {
+  position: absolute;
+  top: clamp(13px, 1.3vw, 22px);
+  left: clamp(13px, 1.3vw, 22px);
+  margin: 0;
+}
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body,
+.app.app--room .funny-answer-tile p.funny-answer-body,
+.tv-screen--playing .funny-answer-tile p.funny-answer-body {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-height: none;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+}
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile .funny-answer-text,
+.app.app--room .funny-answer-tile .funny-answer-text,
+.tv-screen--playing .funny-answer-tile .funny-answer-text {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  font-weight: 750;
+  line-height: 1.18;
+  text-align: center;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+/* answer readability / number-safe text fitting.
+   Keep the card dimensions, position and reveal/vote transitions unchanged.
+   Symmetrical insets protect #1/#2 without shifting the visible answer's center.
+   The fitting hook measures the inner (unpadded) area, not the whole paragraph. */
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile > .funny-answer-number {
+  z-index: 1;
+  pointer-events: none;
+}
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body,
+.app.app--room .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body,
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body {
+  padding-block: clamp(27px, 3.3vh, 38px);
+}
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile .funny-answer-text,
+.app.app--room .funny-answer-tile .funny-answer-text,
+.tv-screen--playing .funny-answer-tile .funny-answer-text {
+  font-size: clamp(3rem, 5.3vw, 4.25rem);
+}
+@media (max-width: 700px) {
+  .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body,
+  .app.app--room .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body {
+    padding-block: 17px;
+  }
+}
+
+/* For brief (one-line) answers, use the full card height. In particular,
+   "a" must not be shrunk to make room for an unrelated corner label. */
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body.funny-answer-body--brief,
+.app.app--room .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body.funny-answer-body--brief,
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body.funny-answer-body--brief {
+  padding-block: 0;
+}
+
+/* hard label clearance + true mobile deck centering.
+   The answer's safe area is bounded separately from the overlaid number.
+   Even if text fitting runs after first paint, glyphs cannot enter the
+   number's top-left corner. Card geometry / reveal transitions stay intact. */
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body,
+.app.app--room .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body,
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body {
+  position: absolute;
+  inset: 34px clamp(13px, 1.3vw, 22px);
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: auto;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+/* One-to-three-character replies have no multi-line label collision,
+   so keep their answer glyphs centered in the *entire* card. */
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body.funny-answer-body--brief,
+.app.app--room .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body.funny-answer-body--brief,
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card.funny-answer-tile p.funny-answer-body.funny-answer-body--brief {
+  inset-block: 10px;
+}
+/* Safe fallback for long responses before the automatic fitter runs. */
+.funny-reveal-deck .funny-reveal-card.funny-answer-tile .funny-answer-body:not(.funny-answer-body--brief) .funny-answer-text,
+.app.app--room .funny-reveal-deck .funny-reveal-card.funny-answer-tile .funny-answer-body:not(.funny-answer-body--brief) .funny-answer-text,
+.tv-screen--playing .funny-reveal-deck .funny-reveal-card.funny-answer-tile .funny-answer-body:not(.funny-answer-body--brief) .funny-answer-text {
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+}
+/* On phones, eliminate the transform-order offset from a rotated stack:
+   every revealed card is centered on the same 50% anchor. */
+@media (max-width: 700px) {
+  .funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile {
+    rotate: 0deg !important;
+  }
+}

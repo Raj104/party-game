@@ -1,0 +1,126 @@
+/* TV auto-fitted round board and result layout. */
+/* TV-only no-scroll adaptive game layout.
+   Phones keep their own scrolling UI. Nothing is silently clipped:
+   FunnyDisplay measures content and shrinks it when height is constrained. */
+.tv-screen--playing {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: clamp(12px, 1.5vh, 28px);
+  padding-bottom: clamp(10px, 1.5vh, 26px);
+}
+.tv-screen--playing .tv-header { flex: 0 0 auto; padding-bottom: clamp(8px, 1vh, 16px); }
+.tv-screen--playing .tv-content--game {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+  padding: clamp(8px, 1.3vh, 18px) 0 0;
+}
+.tv-screen--playing .tv-fit-viewport {
+  position: relative;
+  flex: 1 1 0;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.tv-screen--playing .tv-fit-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  transform-origin: center center;
+}
+.tv-screen--playing .funny-tv-game {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  gap: clamp(5px, .8vh, 12px);
+}
+.tv-screen--playing .funny-board {
+  flex: 0 0 auto;
+  height: auto;
+  justify-content: flex-start;
+}
+.tv-screen--playing .funny-board-top { margin-bottom: clamp(6px, 1vh, 14px); }
+.tv-screen--playing .funny-stage-label { margin-bottom: 4px; }
+.tv-screen--playing .funny-prompt {
+  font-size: clamp(2rem, min(4.5vw, 7vh), 5.2rem);
+  line-height: 1.06;
+  margin: clamp(6px, 1vh, 14px) auto clamp(8px, 1.5vh, 20px);
+  max-width: 35ch;
+}
+/* The question stays visible during voting without consuming the TV. */
+.tv-screen--playing .funny-board--voting .funny-prompt,
+.tv-screen--playing .funny-board--review .funny-prompt {
+  font-size: clamp(1.85rem, min(3.1vw, 5.2vh), 3.65rem);
+  max-width: 45ch;
+}
+.tv-screen--playing .funny-status-text,
+.tv-screen--playing .tv-hint { font-size: clamp(1rem, min(1.6vw, 2.8vh), 1.6rem); margin: 4px auto; }
+.tv-screen--playing .funny-answers-grid--board,
+.tv-screen--playing .funny-answers-grid--results {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  gap: clamp(7px, .9vh, 13px);
+}
+/* Seven or more answers: two rows of up to five, rather than ten tall rows. */
+.tv-screen--playing .funny-answers-grid--board:has(> :nth-child(7)),
+.tv-screen--playing .funny-answers-grid--results:has(> :nth-child(7)) {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.tv-screen--playing .funny-answer-card,
+.tv-screen--playing .funny-answers-grid--board .funny-answer-card,
+.tv-screen--playing .funny-answers-grid--results .funny-answer-card {
+  min-height: 0;
+  padding: clamp(9px, 1vw, 16px);
+}
+.tv-screen--playing .funny-answer-card p {
+  font-size: clamp(1rem, min(1.45vw, 2.4vh), 1.7rem);
+  line-height: 1.22;
+  margin: clamp(5px, .7vh, 10px) 0;
+  overflow-wrap: anywhere;
+}
+.tv-screen--playing .funny-answers-grid--results .funny-answer-by,
+.tv-screen--playing .funny-answers-grid--results .funny-voted-by { font-size: clamp(.76rem, 1vw, 1.03rem); }
+.tv-screen--playing .funny-answer-by { gap: 5px; padding-top: 6px; }
+.tv-screen--playing .funny-voter-tokens .character-token { width: clamp(20px, 1.6vw, 29px); height: clamp(20px, 1.6vw, 29px); }
+.tv-screen--playing .funny-board--results .results-heading,
+.tv-screen--playing .funny-board--finished .final-heading { margin: 4px auto 10px; }
+.tv-screen--playing .funny-board--results .results-heading h2,
+.tv-screen--playing .funny-board--finished .final-heading h2 { font-size: clamp(2rem, min(4vw, 6vh), 4.5rem); }
+.tv-screen--playing .results-toggle { margin-bottom: 10px; }
+.tv-screen--playing .results-toggle button { padding: 8px 18px; }
+.tv-screen--playing .funny-results-auto-note { margin-bottom: 8px; }
+.tv-screen--playing .funny-spotlight { min-height: clamp(135px, 24vh, 300px); padding: clamp(14px, 2vw, 32px); }
+.tv-screen--playing .funny-spotlight strong { font-size: clamp(2rem, min(4vw, 6vh), 4.8rem); }
+.tv-screen--playing .funny-reveal-area { gap: 8px; }
+.tv-screen--playing .funny-revealed-rail {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  overflow: visible;
+  width: 100%;
+  max-width: 100%;
+  gap: 8px;
+  padding: 4px;
+}
+.tv-screen--playing .funny-revealed-rail > div {
+  max-width: none;
+  min-width: 0;
+  padding: 7px;
+  font-size: clamp(.8rem, min(1.1vw, 1.8vh), 1.06rem);
+  line-height: 1.2;
+}
+/* Ten final standings: 2 columns x 5 rows fits a TV better than 10 tall rows. */
+.tv-screen--playing .funny-standings:has(> .funny-standing:nth-child(6)) {
+  width: min(100%, 1400px);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.tv-screen--playing .funny-standing { min-height: 0; padding: clamp(7px, .9vh, 12px) 14px; }
+.tv-screen--playing .funny-standing .character-token { width: clamp(30px, 3vh, 42px); height: clamp(30px, 3vh, 42px); }
+@media (max-width: 700px) {
+  /* Small/narrow displays still fit; readable player phones are unaffected. */
+  .tv-screen--playing .funny-answers-grid--board:has(> :nth-child(7)),
+  .tv-screen--playing .funny-answers-grid--results:has(> :nth-child(7)) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tv-screen--playing .funny-revealed-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

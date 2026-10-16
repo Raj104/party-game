@@ -1,0 +1,59 @@
+/* Adaptive app shell, room sizing, and reusable player identity tokens. */
+/* Responsive layout scales with available screen space, not a narrow phone column. */
+:root { --fff-focus: #bf593b; }
+:root[data-theme="dark"] { --fff-focus: #efb75a; }
+html { font-size: clamp(16px, .62vw + 10px, 19px); }
+body, #root { min-height: 100dvh; }
+body { background: var(--fff-bg); color: var(--fff-ink); }
+.app.app--room, .app.app--home {
+  width: min(100%, 1720px); max-width: none;
+  padding: clamp(16px, 2.4vw, 44px) clamp(14px, 3.4vw, 68px);
+  margin: 0 auto;
+}
+.app.app--room { width: min(100%, 1800px); }
+.app .panel.room-view { padding: clamp(18px, 2.7vw, 42px); width: 100%; }
+.app.app--room .indie-header { margin-bottom: clamp(16px, 1.8vw, 30px); }
+.app.app--room .indie-footer { margin-top: 15px; }
+.app.app--room .room-topbar { padding-bottom: clamp(14px, 1.8vw, 26px); }
+.join-code-field input { text-transform: lowercase; letter-spacing: .02em; }
+.app.app--room .room-code-compact { letter-spacing: -0.015em; font-size: clamp(1.2rem, 2.2vw, 2rem); }
+.app .room-main-content { width: 100%; min-width: 0; }
+.app.app--room .game-phase-panel { padding: clamp(14px, 2.5vw, 32px) 0; }
+.app.app--room .game-phase-panel h2 { text-align: left; font-size: clamp(2rem, 3.3vw, 3.5rem); line-height: 1.05; margin: 4px 0 8px; }
+.app.app--room .game-phase-panel .muted { text-align: left; }
+.selection-heading { display: flex; justify-content: space-between; align-items: end; gap: 26px; margin-bottom: 18px; }
+.app.app--room .game-card-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: clamp(12px, 1.4vw, 24px); margin: 16px 0; }
+.app.app--room .game-choice-card { min-height: clamp(180px, 19vw, 270px); display: flex; align-items: flex-start; justify-content: center; text-align: left; padding: clamp(18px,2vw,32px); gap: 9px; border-radius: 12px; }
+.app.app--room .game-choice-card strong { font-size: clamp(1.6rem, 2.15vw, 2.5rem); letter-spacing: -0.04em; }
+.game-choice-card small { font-size: 0.85rem; color: var(--fff-quiet); }
+.game-choice-card .game-selected-label { font-size: .9rem; color: inherit; }
+.game-choice-doodle { width: 50px; height: 50px; display: grid; place-items: center; font-size: 3rem; line-height: 1; color: var(--fff-ink); transform: rotate(-8deg); }
+.app.app--room .game-choice-card.game-choice-selected { background: var(--fff-coral); color: #28201d; }
+.app.app--room .game-choice-card.game-choice-selected small { color: #45312d; }
+.game-phase-actions { justify-content: flex-start; }
+.app.app--room .lobby-start-panel { display: flex; align-items: center; justify-content: space-between; gap: 30px; min-height: 270px; }
+.app.app--room .lobby-start-panel > button { flex: 0 0 auto; font-size: 1.05rem; min-width: 230px; }
+.how-to-drawer { margin-top: 16px; border-top: 1px dashed var(--fff-border); padding-top: 15px; }
+.how-to-drawer > summary { cursor: pointer; width: fit-content; font-weight: 750; }
+.how-to-drawer ol { max-width: 620px; line-height: 1.6; }
+.app.app--room .funny-setup--inline { display: flex; align-items: center; flex-wrap: wrap; justify-content: space-between; gap: 12px 32px; padding: clamp(18px,2vw,26px); background: var(--fff-muted-paper); border-radius: 12px; }
+.funny-setup-copy h3 { font-size: clamp(1.25rem, 1.8vw, 1.9rem); margin: 0 0 5px; }
+.funny-setup-copy p { margin: 0 0 8px; }
+.funny-setup-copy small { color: var(--fff-quiet); }
+.funny-setup-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 18px; }
+.funny-setup-actions .funny-rounds { margin: 0; padding: 10px 16px; border: 1px solid var(--fff-border); display: flex; gap: 16px; }
+.funny-rounds legend { font-size: .79rem; }
+.funny-rounds input { width: auto; accent-color: var(--fff-focus); }
+.app.app--room .funny-setup-actions .primary { min-width: 180px; padding: 15px; }
+.app.app--room .funny-warning { flex-basis: 100%; margin: 0; color: #a44e2f; }
+
+/* Player tokens: tiny identity marks, never the theme of the game. */
+.player-identity { display: inline-flex; gap: 10px; align-items: center; min-width: 0; max-width: 100%; font-weight: 700; }
+.player-identity-name { min-width: 0; overflow-wrap: anywhere; }
+.player-identity--compact { font-size: .86rem; gap: 7px; }
+.player-identity--compact .character-token { width: 26px; height: 26px; }
+.identity-host { margin-left: auto; color: #a24b26; font-size: .65rem; letter-spacing: .06em; font-weight: 900; }
+.identity-offline { font-size: .72rem; color: var(--fff-quiet); }
+.player-identity--offline { opacity: .56; }
+.room-roster .player { display: flex; gap: 8px; }
+.room-roster .player .player-identity { width: 100%; }

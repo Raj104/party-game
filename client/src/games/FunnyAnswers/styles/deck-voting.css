@@ -1,0 +1,130 @@
+/* Continuous voting deck and token-colored vote states. */
+/* A single stable card deck from review into voting. */
+/* Override older two-column voting rules so the question and answer cards
+   remain in the exact same visual region as the completed reveal. */
+.app.app--room .funny-player-game:has(.funny-board--voting),
+.app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(12px, 1.8vw, 26px);
+}
+.app.app--room .funny-player-game:has(.funny-board--voting) > .funny-board,
+.app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) > .funny-board {
+  display: block;
+  width: 100%;
+}
+.app.app--room .funny-player-game:has(.funny-board--voting) .funny-board-top,
+.app.app--room .funny-player-game:has(.funny-board--voting) .funny-board-core {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+.app.app--room .funny-player-game:has(.funny-board--voting) .funny-board-top {
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+/* Use the SAME spacing, dimensions and centered position for review & voting. */
+.funny-board--voting .funny-reveal-deck,
+.funny-board--review .funny-reveal-deck { gap: clamp(10px, 1.6vh, 22px); }
+.funny-board--voting .funny-reveal-deck-cards.funny-answer-layout,
+.funny-board--review .funny-reveal-deck-cards.funny-answer-layout {
+  min-height: clamp(230px, 33vh, 400px);
+  padding: 8px 0;
+  align-content: center;
+}
+.funny-board--voting .funny-prompt,
+.funny-board--review .funny-prompt { margin-bottom: clamp(14px, 2.5vh, 30px); }
+/* Keep the phase instruction in an identical space, regardless of wording. */
+.funny-board--voting .funny-phase-hint,
+.funny-board--review .funny-status-text {
+  font-size: clamp(.95rem, 1.15vw, 1.3rem);
+  line-height: 1.35;
+  margin: clamp(12px, 1.8vh, 24px) auto clamp(18px, 2.5vh, 32px);
+  min-height: 1.35em;
+}
+.funny-board--voting .funny-reveal-card.funny-answer-tile,
+.app.app--room .funny-board--voting .funny-reveal-card.funny-answer-tile,
+.tv-screen--playing .funny-board--voting .funny-reveal-card.funny-answer-tile {
+  appearance: none;
+  font-family: inherit;
+  cursor: default;
+  background: var(--fff-muted-paper);
+  color: var(--fff-ink);
+  border: 1.5px solid var(--fff-border);
+  overflow: hidden;
+}
+.app.app--room .funny-board--voting button.funny-reveal-card:not(:disabled) { cursor: pointer; }
+.app.app--room .funny-board--voting button.funny-reveal-card:focus-visible { outline: 3px solid var(--fff-focus); outline-offset: 3px; }
+.app.app--room .funny-board--voting button.funny-reveal-card:disabled { opacity: .56; }
+/* Use the player's character token color, never a random global accent. */
+.funny-player-game[data-voter-character="scribble"] { --fff-voter-color: #f4a97b; }
+.funny-player-game[data-voter-character="bolt"] { --fff-voter-color: #d5bd72; }
+.funny-player-game[data-voter-character="odd-one"] { --fff-voter-color: #b6a2d1; }
+.funny-player-game[data-voter-character="stripe"] { --fff-voter-color: #aacaa9; }
+.funny-player-game[data-voter-character="orbit"] { --fff-voter-color: #a7bcca; }
+.funny-player-game[data-voter-character="blob"] { --fff-voter-color: #db9cb2; }
+.app.app--room .funny-board--voting button.funny-reveal-card.selected {
+  background: var(--fff-voter-color, #f4a97b);
+  color: #242424;
+  border: 2px solid #302923;
+  opacity: 1;
+}
+.app.app--room .funny-board--voting button.funny-reveal-card.selected p { color: #242424; }
+.funny-board--voting .funny-reveal-card small {
+  font-size: .74rem;
+  line-height: 1.15;
+  margin-top: 4px;
+  text-align: center;
+}
+.funny-voting-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+  width: min(100%, 620px);
+  margin: clamp(10px, 2vh, 24px) auto 0;
+}
+.funny-voting-actions .primary { width: 100%; }
+.funny-voting-actions .muted { font-size: .85rem; text-align: center; margin: 0; }
+/* No internal scrollbars on a dealt answer; scale long text to the card. */
+.funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile p,
+.app.app--room .funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile p,
+.tv-screen--playing .funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile p {
+  max-height: none;
+  overflow: visible;
+  font-size: clamp(.98rem, 1.45vw, 1.44rem);
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+.funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile--very-long p,
+.app.app--room .funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile--very-long p,
+.tv-screen--playing .funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile--very-long p {
+  font-size: clamp(.88rem, 1.05vw, 1.17rem);
+}
+.funny-reveal-deck--stack .funny-reveal-card.funny-answer-tile { overflow: hidden; }
+/* TV receives the same grid, but remains non-interactive. */
+.tv-screen--playing .funny-board--voting .funny-reveal-deck-cards.funny-answer-layout,
+.tv-screen--playing .funny-board--review .funny-reveal-deck-cards.funny-answer-layout {
+  min-height: clamp(195px, 32vh, 340px);
+}
+@media (max-width: 700px) {
+  .funny-board--voting .funny-reveal-deck-cards.funny-answer-layout,
+  .funny-board--review .funny-reveal-deck-cards.funny-answer-layout {
+    min-height: 0;
+    align-content: flex-start;
+  }
+  .app.app--room .funny-board--voting .funny-prompt { font-size: clamp(1.8rem, 7vw, 2.4rem); }
+}
+/* Match the small instructional caption size on the shared TV when the
+   reading period turns into voting; don't suddenly enlarge the line. */
+.tv-screen--playing .funny-board--review .funny-status-text,
+.tv-screen--playing .funny-board--voting .funny-phase-hint {
+  font-size: clamp(.95rem, 1.15vw, 1.4rem);
+  line-height: 1.35;
+  min-height: 1.35em;
+  margin: clamp(12px, 1.8vh, 24px) auto clamp(18px, 2.5vh, 32px);
+  text-align: center;
+}

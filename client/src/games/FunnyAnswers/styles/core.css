@@ -1,0 +1,36 @@
+/* Funny Answers base board, inputs, and results. */
+.funny-setup { margin-top: 20px; padding: 16px; border: 1px solid #8f87ab55; border-radius: 12px; }
+.funny-setup h4 { margin: 0 0 10px; }
+.funny-rounds { display: flex; flex-wrap: wrap; gap: 16px; margin: 16px 0; padding: 12px; border-radius: 8px; }
+.funny-rounds legend { font-weight: 700; }
+.funny-rounds label { display: inline-flex; gap: 5px; align-items: center; }
+.funny-warning { color: #d66060; }
+.funny-player-game { margin: 18px 0; }
+.funny-board { margin: 12px 0; padding: 16px; border: 1px solid #8f87ab66; border-radius: 14px; }
+.funny-board h2 { line-height: 1.3; overflow-wrap: anywhere; }
+.funny-board-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.funny-stage { font-weight: 700; margin-top: 14px; }
+.funny-time { display: inline-block; min-width: 42px; padding: 6px 10px; border-radius: 10px; background: #57469f; color: white; }
+.funny-answers-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 12px; margin: 16px 0; }
+.funny-answer-card { padding: 14px; border: 1px solid #9488a977; border-radius: 12px; background: rgba(130, 115, 180, 0.10); overflow-wrap: anywhere; }
+.funny-answer-number { font-size: .78rem; opacity: .75; }
+.funny-answer-result { display: grid; gap: 5px; font-size: .85rem; }
+.funny-answer-result small { overflow-wrap: anywhere; }
+.funny-interaction { display: grid; gap: 12px; margin: 14px 0; padding: 16px; border: 1px solid #8f87ab66; border-radius: 12px; }
+.funny-interaction textarea { width: 100%; min-height: 88px; box-sizing: border-box; resize: vertical; font: inherit; padding: 12px; border-radius: 8px; }
+.funny-editor-footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.funny-vote-list { display: grid; gap: 10px; }
+.funny-vote-choice { color: inherit; font: inherit; width: 100%; display: flex; flex-direction: column; gap: 6px; text-align: left; padding: 14px; border: 2px solid #8f87ab77; border-radius: 10px; background: rgba(130, 115, 180, .12); overflow-wrap: anywhere; cursor: pointer; }
+.funny-vote-choice.selected { border-color: #a77aff; background: rgba(130, 115, 180, .30); }
+.funny-vote-choice:disabled { opacity: .5; cursor: not-allowed; }
+.funny-vote-choice small { font-size: .8rem; }
+.funny-controls { display: flex; flex-wrap: wrap; gap: 9px; }
+.funny-scores { margin-top: 22px; }
+.funny-scores ol { padding-left: 22px; }
+.funny-scores li { display: list-item; padding: 7px 0; }
+.funny-scores li span { display: inline-block; min-width: 100px; }
+.funny-scores li strong { margin-left: 12px; }
+.funny-board-tv { width: min(95%, 1150px); margin-inline: auto; }
+.funny-board-tv .funny-answers-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 265px), 1fr)); }
+.funny-board-tv .funny-answer-card p { font-size: clamp(1.1rem, 2vw, 1.6rem); }
+@media (max-width: 480px) { .funny-board, .funny-interaction { padding: 12px; } .funny-answers-grid { grid-template-columns: 1fr; } }

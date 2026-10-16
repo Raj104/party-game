@@ -2,16 +2,19 @@ import type { Server, Socket } from "socket.io";
 import { MAX_PLAYERS } from "../config";
 import {
   createPlayer, generateRoomCode, leaveRoom, nameTaken, publicRoom,
-  rooms, updateRoom, validateName,
+  rooms, updateRoom, refreshRoomIdleTimer, removePlayer, promoteConnectedHost, validateCharacter, validateName,
 } from "../rooms/store";
 import type { Room } from "../types";
+import { normalizeRoomCode } from "../rooms/roomCodes";
 import { registerGameEvents } from "./registerGameEvents";
 
 export function registerRoomEvents(io: Server, socket: Socket) {
   console.log("Connected:", socket.id);
 
-  socket.on("create_room", (rawName, callback) => {
+  socket.on("create_room", (rawName, rawCharacterOrCallback, maybeCallback) => {
+    const callback = typeof rawCharacterOrCallback === "function" ? rawCharacterOrCallback : maybeCallback;
     if (typeof callback !== "function") return;
+    const character = validateCharacter(typeof rawCharacterOrCallback === "function" ? undefined : rawCharacterOrCallback);
     const name = validateName(rawName);
     if (!name) {
       callback({ ok: false, error: "Enter a nickname (1-20 characters)." });
@@ -20,13 +23,16 @@ export function registerRoomEvents(io: Server, socket: Socket) {
 
     leaveRoom(io, socket);
     const code = generateRoomCode();
-    const player = createPlayer(name, socket);
+    const player = createPlayer(name, socket, character);
     const room: Room = {
       code,
       players: [player],
       displays: new Set(),
-      phase: "lobby",
+      phase: "selection",
       selectedGame: null,
+      selectedRounds: 3,
+      funny: null,
+      lastScoreboard: null,
     };
     rooms.set(code, room);
     socket.join(code);
@@ -38,10 +44,12 @@ export function registerRoomEvents(io: Server, socket: Socket) {
     console.log(`${name} created ${code}`);
   });
 
-  socket.on("join_room", (rawCode, rawName, callback) => {
+  socket.on("join_room", (rawCode, rawName, rawCharacterOrCallback, maybeCallback) => {
+    const callback = typeof rawCharacterOrCallback === "function" ? rawCharacterOrCallback : maybeCallback;
     if (typeof callback !== "function") return;
+    const character = validateCharacter(typeof rawCharacterOrCallback === "function" ? undefined : rawCharacterOrCallback);
     const name = validateName(rawName);
-    const code = typeof rawCode === "string" ? rawCode.trim().toUpperCase() : "";
+    const code = normalizeRoomCode(rawCode) ?? "";
     if (!name) {
       callback({ ok: false, error: "Enter a nickname (1-20 characters)." });
       return;
@@ -60,8 +68,10 @@ export function registerRoomEvents(io: Server, socket: Socket) {
       return;
     }
     leaveRoom(io, socket);
-    const player = createPlayer(name, socket);
+    const player = createPlayer(name, socket, character);
     room.players.push(player);
+    promoteConnectedHost(room);
+    refreshRoomIdleTimer(io, room);
     socket.join(code);
     socket.data.roomCode = code;
     socket.data.role = "player";
@@ -73,7 +83,7 @@ export function registerRoomEvents(io: Server, socket: Socket) {
 
   socket.on("resume_room", (rawCode, rawToken, callback) => {
     if (typeof callback !== "function") return;
-    const code = typeof rawCode === "string" ? rawCode.trim().toUpperCase() : "";
+    const code = normalizeRoomCode(rawCode) ?? "";
     const token = typeof rawToken === "string" ? rawToken : "";
     const room = rooms.get(code);
     const player = room?.players.find((entry) => entry.token === token);
@@ -97,11 +107,9 @@ export function registerRoomEvents(io: Server, socket: Socket) {
         oldSocket.disconnect(true);
       }
     }
-    if (player.reconnectTimer) {
-      clearTimeout(player.reconnectTimer);
-      player.reconnectTimer = undefined;
-    }
     player.socketId = socket.id;
+    promoteConnectedHost(room);
+    refreshRoomIdleTimer(io, room);
     socket.join(code);
     socket.data.roomCode = code;
     socket.data.role = "player";
@@ -113,7 +121,7 @@ export function registerRoomEvents(io: Server, socket: Socket) {
 
   socket.on("watch_room", (rawCode, callback) => {
     if (typeof callback !== "function") return;
-    const code = typeof rawCode === "string" ? rawCode.trim().toUpperCase() : "";
+    const code = normalizeRoomCode(rawCode) ?? "";
     const room = rooms.get(code);
     if (!room) {
       callback({ ok: false, error: "Room not found." });
@@ -130,6 +138,37 @@ export function registerRoomEvents(io: Server, socket: Socket) {
     socket.data.role = "display";
     callback({ ok: true, room: publicRoom(room) });
     updateRoom(io, room);
+  });
+
+  socket.on("kick_player", (rawId: unknown, callback: unknown) => {
+    if (typeof callback !== "function") return;
+    const code = socket.data.roomCode as string | undefined;
+    const room = code ? rooms.get(code) : undefined;
+    if (!room || socket.data.role !== "player" || room.players[0]?.id !== socket.data.playerId || room.players[0]?.socketId !== socket.id) {
+      callback({ ok: false, error: "Only the host can remove players." });
+      return;
+    }
+    if (typeof rawId !== "string" || rawId === socket.data.playerId) {
+      callback({ ok: false, error: "Select another player to remove." });
+      return;
+    }
+    const player = room.players.find(entry => entry.id === rawId);
+    if (!player) {
+      callback({ ok: false, error: "Player not found." });
+      return;
+    }
+    // Invalidate recovery before disconnecting their socket.
+    const kickedSocket = player.socketId ? io.sockets.sockets.get(player.socketId) : undefined;
+    if (kickedSocket) {
+      kickedSocket.emit("room_kicked");
+      kickedSocket.leave(room.code);
+      delete kickedSocket.data.roomCode;
+      delete kickedSocket.data.role;
+      delete kickedSocket.data.playerId;
+    }
+    removePlayer(io, room, player.id);
+    // Keep the transport connected so the removed player can join a new room immediately.
+    callback({ ok: true });
   });
 
   // All game actions remain server-authorized host operations.

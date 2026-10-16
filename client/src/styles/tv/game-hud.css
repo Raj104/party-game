@@ -1,0 +1,112 @@
+/* TV round HUD positioning and adaptable phase stage. */
+/* TV game HUD stays at the top; only variable content shrinks to fit.
+   This intentionally does not target the player/phone application. */
+.tv-screen--playing .tv-content--game {
+  flex-direction: column;
+  justify-content: flex-start;
+}
+.tv-screen--playing .tv-game-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.tv-screen--playing .tv-game-hud {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  min-height: clamp(56px, 8.2vh, 92px);
+  margin: 0 0 clamp(8px, 1.1vh, 16px);
+  padding: 0 clamp(12px, 1.2vw, 22px);
+}
+.tv-screen--playing .tv-game-round {
+  color: var(--fff-quiet);
+  font-size: clamp(1.03rem, 1.55vw, 1.65rem);
+  font-weight: 900;
+  letter-spacing: .12em;
+  line-height: 1.2;
+}
+.tv-screen--playing .tv-game-countdown {
+  white-space: nowrap;
+  padding: clamp(8px, 1vh, 15px) clamp(12px, 1.2vw, 20px);
+  border: 1.5px solid var(--fff-border);
+  border-radius: 12px;
+  background: var(--fff-accent);
+  color: var(--fff-accent-ink);
+  font-size: clamp(1rem, 1.8vw, 2rem);
+  line-height: 1.2;
+}
+/* Hide only the duplicate display-only header from FunnyBoard. The external HUD
+   stays full-size even when a long question forces the board itself to shrink. */
+.tv-screen--playing .tv-fit-content .funny-board-top { display: none; }
+.tv-screen--playing .tv-game-stage .tv-fit-viewport {
+  flex: 1 1 0;
+  min-height: 0;
+  width: 100%;
+}
+.tv-screen--playing .tv-game-stage .tv-fit-content {
+  width: 100%;
+}
+.tv-screen--playing .tv-game-stage .funny-board-core {
+  width: 100%;
+  max-width: none;
+  text-align: center;
+}
+.tv-screen--playing .tv-game-stage .funny-stage-label {
+  margin: 0 auto clamp(10px, 1.2vh, 18px);
+  text-align: center;
+}
+.tv-screen--playing .tv-game-stage .funny-prompt {
+  margin-top: 0;
+}
+@media (max-width: 900px) {
+  .tv-screen--playing .tv-game-hud {
+    justify-content: space-between;
+    gap: 12px;
+    text-align: left;
+  }
+  .tv-screen--playing .tv-game-round {
+    font-size: clamp(.85rem, 1.6vw, 1.05rem);
+    letter-spacing: .06em;
+  }
+  .tv-screen--playing .tv-game-countdown {
+    position: static;
+    transform: none;
+    font-size: clamp(.85rem, 1.8vw, 1.15rem);
+  }
+}
+
+
+/* Shared TV: left/right fixed HUD and vertically centered, fit-to-screen content.
+   Do not affect player phones or non-playing TV lobby screens. */
+.tv-screen--playing .tv-game-hud {
+  justify-content: space-between;
+  text-align: left;
+  gap: clamp(12px, 2vw, 28px);
+}
+.tv-screen--playing .tv-game-round {
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+}
+.tv-screen--playing .tv-game-countdown {
+  position: static;
+  flex: 0 0 auto;
+  right: auto;
+  top: auto;
+  transform: none;
+  margin-left: auto;
+}
+/* The timer and HUD already identify the current phase. Keep the entire remaining
+   viewport for the prompt, submission progress, answer grid or results. */
+.tv-screen--playing .tv-game-stage .funny-stage-label {
+  display: none;
+}
+.tv-screen--playing .tv-game-stage .tv-fit-content {
+  top: 50%;
+  left: 50%;
+  transform-origin: center center;
+}

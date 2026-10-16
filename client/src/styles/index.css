@@ -1,0 +1,30 @@
+/* FFF style entry point.
+   IMPORTANT: Keep these imports in this order. Later phase/detail rules intentionally
+   refine earlier foundations. See STYLE_GUIDE.md before changing cascade order. */
+@import "./base/application.css";
+@import "./lobby/game-catalog.css";
+@import "../games/FunnyAnswers/styles/core.css";
+@import "./theme/indie.css";
+@import "./base/responsive-shell.css";
+@import "../games/FunnyAnswers/styles/player-foundation.css";
+@import "./tv/screen-foundation.css";
+@import "./lobby/room-setup.css";
+@import "./lobby/game-details.css";
+@import "./lobby/game-browser.css";
+@import "./lobby/lobby-layout.css";
+@import "./lobby/room-controls.css";
+@import "./tv/game-board-fit.css";
+@import "../games/FunnyAnswers/styles/player-voting.css";
+@import "./tv/game-hud.css";
+@import "../games/FunnyAnswers/styles/player-stages.css";
+@import "../games/FunnyAnswers/styles/reveal-layout.css";
+@import "../games/FunnyAnswers/styles/review-layout.css";
+@import "../games/FunnyAnswers/styles/deal-animation.css";
+@import "../games/FunnyAnswers/styles/answer-surfaces.css";
+@import "../games/FunnyAnswers/styles/deck-voting.css";
+@import "../games/FunnyAnswers/styles/answer-text.css";
+@import "../games/FunnyAnswers/styles/results.css";
+@import "./tv/local-display-tuning.css";
+@import "../games/FunnyAnswers/styles/confirmed-vote.css";
+@import "./tv/phase-spacing.css";
+@import "./tv/gameplay-invite.css";

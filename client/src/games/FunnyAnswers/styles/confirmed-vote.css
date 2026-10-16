@@ -1,0 +1,23 @@
+/* Result-card geometry and confirmed player voting colors. */
+/* loaded after the player layout so hand-tuned rules
+   remain intact. Scope all spacing changes to TV; the selected-vote rule
+   applies to player voting cards only. */
+.app.app--room .funny-answers-grid--results.funny-answer-layout > .funny-answer-tile--results,
+.tv-screen--playing .funny-answers-grid--results.funny-answer-layout > .funny-answer-tile--results {
+  /* Voted-by subtitle was removed: 3 rows, not 4. */
+  grid-template-rows: auto clamp(92px, 13vh, 130px) auto;
+}
+/* Room/player confirmed vote remains highlighted after submit.
+   Confirmed cards become <article>, not <button>; the old rule only styled buttons.
+   Keep character-specific color, even after refreshing and restoring the vote. */
+.app.app--room .funny-board--voting .funny-reveal-card.funny-reveal-card--confirmed {
+  background: var(--fff-voter-color, #f4a97b);
+  color: #242424;
+  border: 2px solid #302923;
+  opacity: 1;
+  box-shadow: 0 0 0 3px var(--fff-voter-color, #f4a97b);
+}
+.app.app--room .funny-board--voting .funny-reveal-card.funny-reveal-card--confirmed p,
+.app.app--room .funny-board--voting .funny-reveal-card.funny-reveal-card--confirmed .funny-answer-text {
+  color: #242424;
+}

@@ -1,64 +1,74 @@
 import { PlayerList } from "../components/PlayerList";
+import { ThemePicker } from "../components/ThemePicker";
+import { JoinQrCode } from "../components/JoinQrCode";
+import { FunnyDisplay } from "../games/FunnyAnswers/FunnyDisplay";
 import { findGame } from "../data/games";
 import { returnFromDisplay } from "../lib/session";
+import type { ThemePreference } from "../hooks/useTheme";
 import type { Room } from "../types/party";
 
-type Props = { room: Room | null; connected: boolean; error: string };
+type Props = { room: Room | null; connected: boolean; error: string; theme: ThemePreference; onThemeChange: (theme: ThemePreference) => void };
 
-export function DisplayScreen({ room, connected, error }: Props) {
+export function DisplayScreen({ room, connected, error, theme, onThemeChange }: Props) {
   const selectedGame = room ? findGame(room.selectedGame) : undefined;
+  const hostName = room?.players.find(player => player.isHost)?.name;
+  const hostRoomTitle = hostName ? `${hostName}${/s$/i.test(hostName) ? "’" : "’s"} Room` : "Your Party Room";
+  const playing = room?.phase === "playing" && Boolean(room.funny);
   return (
-    <main className="tv-screen">
+    <main className={`tv-screen${playing ? " tv-screen--playing" : ""}`}>
       <header className="tv-header">
-        <h1>FFF | Fun with Friends &amp; Family</h1>
-        <span className="tv-badge">SHARED DISPLAY</span>
+        <div className="tv-brand"><strong>FFF</strong><span>FUN WITH FRIENDS &amp; FAMILY</span></div>
+        <div className="tv-header-actions">
+          {room && (playing ? <strong className="tv-header-room-code">{room.code}</strong> : <strong className="tv-host-room-title">{hostRoomTitle}</strong>)}
+          <ThemePicker value={theme} onChange={onThemeChange}/>
+        </div>
       </header>
       {room ? (
-        <div className="tv-content">
-          <p className="tv-label">JOIN THE PARTY!</p>
-          <h2 className="tv-code">{room.code}</h2>
-          <p className="tv-instructions">
-            Open the Game website on your phone and enter the room code!
-          </p>
-          {room.phase === "selection" && (
-            <section className="game-phase-panel" aria-live="polite">
-              <p className="game-eyebrow">GAME SELECTION</p>
-              <h2>Choosing a mini-game</h2>
-              {selectedGame ? (
-                <p className="game-big-choice">{selectedGame.emoji} {selectedGame.title}</p>
-              ) : (
-                <p>Waiting for the host to pick a game...</p>
-              )}
-            </section>
+        <div className={`tv-content${playing ? " tv-content--game" : " tv-content--lobby"}`}>
+          {playing && room.funny ? <FunnyDisplay room={room} /> : (
+            <>
+              <div className="tv-lobby-hero">
+                <p className="tv-lobby-invite-label">JOIN THIS ROOM</p>
+                <div className="tv-lobby-code">{room.code}</div>
+                <p className="tv-lobby-invite-hint">Ask the host for an invite link or scan the below QR code.</p>
+                <JoinQrCode code={room.code} />
+              </div>
+              <div className="tv-lobby-side">
+                <p className="game-eyebrow">{room.players.length} HERE SO FAR</p>
+                <PlayerList players={room.players} variant="tv" />
+                {room.phase !== "lobby" && selectedGame ? (
+                  <div className="tv-game-preview" aria-live="polite">
+                    <div className="tv-game-preview-heading">
+                      <span className="tv-game-preview-icon" aria-hidden="true">{selectedGame.glyph}</span>
+                      <div><p className="game-eyebrow">UP NEXT</p><h2>{selectedGame.title}</h2></div>
+                    </div>
+                    <h3>How to play</h3>
+                    <ul className="tv-game-instructions">
+                      {selectedGame.instructions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}
+                    </ul>
+                    <p className="tv-waiting">{selectedGame.available ? `Host is setting up the game · ${room.selectedRounds} rounds` : "Coming soon · Host is previewing this game"}</p>
+                  </div>
+                ) : (
+                  <p className="tv-waiting">{room.phase === "lobby" ? "Waiting for the host to choose a game." : "Host is picking the next game."}</p>
+                )}
+              </div>
+            </>
           )}
-          {room.phase === "instructions" && selectedGame && (
-            <section className="game-phase-panel" aria-live="polite">
-              <p className="game-eyebrow">HOW TO PLAY</p>
-              <h2>{selectedGame.emoji} {selectedGame.title}</h2>
-              <ol className="game-instructions">
-                {selectedGame.instructions.map((step) => <li key={step}>{step}</li>)}
-              </ol>
-              <p className="muted">Gameplay is coming in the next milestone.</p>
-            </section>
-          )}
-          <PlayerList players={room.players} variant="tv" />
-          <div className="tv-waiting">
-            <span className="pulse-dot" />
-            {room.phase === "lobby"
-              ? "Waiting for the game to start..."
-              : room.phase === "selection"
-                ? "Host is selecting a game..."
-                : "Get ready to play!"}
+        </div>
+      ) : <div className="tv-content tv-content--unavailable">
+        <h1>{connected ? "Room unavailable." : "Connecting…"}</h1>
+        <p>{error || "Connecting to the multiplayer server…"}</p>
+        <p className="tv-connection-hint">A shared display can only stay open while its room still exists.</p>
+        <button className="secondary" onClick={returnFromDisplay}>Back home</button>
+      </div>}
+      {playing && room ? (
+        <footer className="tv-permanent-invite tv-game-invite" aria-label="Join this room">
+          <div className="tv-permanent-qr">
+            <JoinQrCode code={room.code} compact />
           </div>
-        </div>
-      ) : (
-        <div className="tv-content">
-          <h2>{connected ? "Room Unavailable" : "Connecting..."}</h2>
-          <p className="tv-instructions">{error || "Connecting to the multiplayer server..."}</p>
-          <button className="secondary" onClick={returnFromDisplay}>Return to Home</button>
-        </div>
-      )}
-      <footer className="tv-footer">FFF • Shared Screen Mode</footer>
+          <strong className="tv-game-host-title">{hostRoomTitle}</strong>
+        </footer>
+      ) : <footer className="tv-footer">A little competition. A lot of nonsense.</footer>}
     </main>
   );
 }

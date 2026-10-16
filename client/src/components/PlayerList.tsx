@@ -1,39 +1,20 @@
+import { PlayerIdentity } from "./PlayerIdentity";
 import type { Player } from "../types/party";
 
-type Props = { players: Player[]; variant?: "player" | "tv" };
+type Props = { players: Player[]; variant?: "player" | "tv"; currentPlayerId?: string | null; isHost?: boolean; onKick?: (player: Player) => void };
 
-export function PlayerList({ players, variant = "player" }: Props) {
-  if (variant === "tv") {
-    return (
-      <section className="tv-players">
-        <h2>Players ({players.length}/12)</h2>
-        <div className="tv-player-grid">
-          {players.map((player) => (
-            <div className={"tv-player" + (!player.connected ? " offline-player" : "")} key={player.id}>
-              <span className="tv-avatar">{player.isHost ? "👑" : "🎮"}</span>
-              <span>{player.name}</span>
-              {!player.connected && <span className="player-status">Reconnecting...</span>}
-            </div>
-          ))}
-        </div>
-      </section>
-    );
-  }
-
+export function PlayerList({ players, variant = "player", currentPlayerId = null, isHost = false, onKick }: Props) {
   return (
-    <div className="room-info">
-      <h3>Players ({players.length}/12)</h3>
-      <div className="player-list">
-        {players.map((player) => (
-          <div className={"player" + (!player.connected ? " offline-player" : "")} key={player.id}>
-            <span>
-              {player.isHost ? "👑 " : "🎮 "}{player.name}
-              {!player.connected && " (Offline)"}
-            </span>
-            {player.isHost && <span className="host-tag">HOST</span>}
-          </div>
-        ))}
-      </div>
+    <div className={variant === "tv" ? "tv-player-grid" : "player-list"}>
+      {players.map(player => (
+        <div key={player.id} className={`${variant === "tv" ? "tv-player" : "player"}${player.connected ? "" : " offline-player"}${variant === "player" && player.id === currentPlayerId ? " player--self" : ""}`}>
+          <PlayerIdentity name={player.name} character={player.character} host={player.isHost} offline={!player.connected} you={variant === "player" && player.id === currentPlayerId} />
+          {variant === "player" && isHost && !player.isHost && onKick && (
+            <button type="button" className="room-kick-player" title={`Remove ${player.name} from room`}
+              aria-label={`Remove ${player.name} from room`} onClick={() => onKick(player)}>Remove</button>
+          )}
+        </div>
+      ))}
     </div>
   );
 }

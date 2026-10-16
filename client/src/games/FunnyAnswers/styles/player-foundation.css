@@ -1,0 +1,70 @@
+/* Player-facing round states and answer/vote controls. */
+/* Phase screen — each game state has a single primary region. */
+.app.app--room .funny-player-game { margin: 0; display: flex; flex-direction: column; gap: clamp(12px, 1.8vw, 26px); }
+.app.app--room .funny-board { margin: 0; border: 0; padding: clamp(12px, 1.5vw, 20px) 0; background: transparent; }
+.funny-board-top { padding-bottom: clamp(10px,1.2vw,20px); }
+.funny-board-top .game-eyebrow { font-size: clamp(.82rem, .85vw, 1rem); opacity: 1; }
+.app.app--room .funny-time { font-size: clamp(.93rem,1.1vw,1.18rem); border: 1px solid var(--fff-border); border-radius: 50px; padding: 9px 16px; }
+.funny-board-core { max-width: none; }
+.funny-stage-label { margin: 0 0 10px; color: var(--fff-quiet); font-size: .85rem; font-weight: 850; letter-spacing: .14em; }
+.app.app--room .funny-board .funny-prompt { font-size: clamp(2.25rem, 4.7vw, 5.8rem); max-width: 25ch; line-height: 1.06; letter-spacing: -.05em; text-align: left; margin: 12px 0 28px; overflow-wrap: anywhere; }
+.funny-status { max-width: 680px; color: var(--fff-quiet); font-size: 1rem; }
+.funny-status strong { font-size: 1.7rem; color: var(--fff-ink); }
+.status-track { height: 9px; background: var(--fff-muted-paper); border-radius: 10px; display: block; overflow: hidden; margin-top: 10px; }
+.status-track i { display: block; height: 100%; background: var(--fff-coral); transition: width .3s ease; }
+.funny-status-text { font-size: clamp(1.05rem, 1.4vw, 1.5rem); color: var(--fff-quiet); }
+.app.app--room .funny-interaction { border: 1.5px solid var(--fff-border); padding: clamp(16px, 2.2vw, 32px); margin: 0; background: var(--fff-muted-paper); border-radius: 13px; }
+.app.app--room .funny-interaction textarea { min-height: clamp(145px, 17vh, 260px); width: 100%; resize: vertical; font-size: clamp(1.15rem, 1.7vw, 1.6rem); padding: 16px; }
+.funny-interaction > label { font-size: 1rem; }
+.funny-interaction .primary { font-size: 1.05rem; padding: 14px 22px; }
+.funny-editor-footer small { color: var(--fff-quiet); }
+.funny-stage-note { color: var(--fff-quiet); font-weight: 600; }
+.app.app--room .funny-player-game:has(.funny-board--submission) { display: grid; grid-template-columns: minmax(0,1.15fr) minmax(300px,.85fr); align-items: start; gap: clamp(24px,4vw,70px); min-height: min(65vh,700px); }
+.app.app--room .funny-player-game:has(.funny-board--submission) .funny-interaction { margin-top: 22px; }
+.app.app--room .funny-player-game:has(.funny-board--submission) .funny-board { padding-top: 20px; }
+.app.app--room .funny-player-game:has(.funny-board--voting) { display: grid; grid-template-columns: minmax(230px,.65fr) minmax(0,1.35fr); align-items: start; gap: clamp(22px,4vw,68px); }
+.app.app--room .funny-player-game:has(.funny-board--voting) .funny-interaction { margin-top: 20px; }
+.funny-interaction .funny-vote-list { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,240px),1fr)); gap: 12px; }
+.app.app--room .funny-vote-choice { background: var(--fff-paper); color: var(--fff-ink); border: 1.5px solid var(--fff-border); min-height: 90px; font-size: clamp(1.04rem,1.25vw,1.35rem); justify-content: center; }
+.app.app--room .funny-vote-choice.selected { background: var(--fff-lilac); color: #231e25; border: 3px solid var(--fff-ink); }
+.app.app--room .funny-vote-choice:disabled { opacity: .48; }
+.app.app--room .funny-player-game:has(.funny-board--results) .funny-interaction,
+.app.app--room .funny-player-game:has(.funny-board--finished) .funny-interaction { width: min(100%, 540px); margin: 0 auto; background: transparent; border: 0; padding: 0; }
+.app.app--room .funny-player-game:has(.funny-board--results) .funny-interaction .primary,
+.app.app--room .funny-player-game:has(.funny-board--finished) .funny-interaction .primary { width: 100%; }
+.funny-board--results .results-heading, .funny-board--finished .final-heading { text-align: center; margin: clamp(8px,1vw,20px) auto clamp(20px,2.5vw,40px); }
+.funny-board--results .results-heading h2, .funny-board--finished .final-heading h2 { font-size: clamp(2.3rem,4vw,5rem); letter-spacing: -.05em; line-height: 1.08; margin: 8px 0; }
+.final-star { display: block; color: var(--fff-accent); line-height: 1; font-size: clamp(3.5rem,5vw,6rem); }
+.final-heading p { color: var(--fff-quiet); }
+.results-toggle { display: flex; justify-content: center; gap: 0; margin: 0 auto 22px; }
+.results-toggle button { background: var(--fff-muted-paper); color: var(--fff-ink); border: 1px solid var(--fff-border); border-radius: 0; padding: 12px 25px; font-size: .95rem; }
+.results-toggle button:first-child { border-radius: 9px 0 0 9px; }
+.results-toggle button:last-child { border-radius: 0 9px 9px 0; }
+.results-toggle .is-active { background: var(--fff-accent); color: var(--fff-accent-ink); }
+.funny-answers-grid--board, .funny-answers-grid--results { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,320px),1fr)); gap: clamp(12px,1.4vw,24px); }
+.app.app--room .funny-answer-card { background: var(--fff-muted-paper); padding: clamp(16px,1.7vw,26px); border: 1.5px solid var(--fff-border); min-width: 0; }
+.funny-answer-card p { font-size: clamp(1.15rem, 1.55vw, 1.7rem); line-height: 1.35; font-weight: 650; margin: 13px 0 20px; overflow-wrap: anywhere; }
+.funny-answer-number { color: var(--fff-quiet); font-weight: 900; letter-spacing: .05em; }
+.funny-answer-head { display: flex; justify-content: space-between; gap: 10px; align-items: start; }
+.funny-voter-tokens { display: flex; flex-wrap: wrap; justify-content: end; gap: 4px; }
+.funny-voter-tokens .character-token { width: clamp(26px,2vw,35px); height: clamp(26px,2vw,35px); }
+.funny-answer-by { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding-top: 10px; border-top: 1px dashed var(--fff-border); }
+.funny-answer-by > strong { white-space: nowrap; }
+.funny-voted-by { display: block; color: var(--fff-quiet); margin-top: 8px; }
+.funny-reveal-area { display: grid; gap: 15px; justify-items: center; }
+.funny-spotlight { display: grid; justify-items: center; align-content: center; gap: 18px; width: min(100%, 950px); min-height: clamp(200px,30vh,360px); background: var(--fff-paper); border: 2px solid var(--fff-border); border-radius: 12px; padding: 28px; box-shadow: 8px 8px 0 var(--fff-muted-paper); transform: rotate(-.45deg); text-align: center; }
+.funny-spotlight > span { color: var(--fff-quiet); }
+.funny-spotlight > strong { font-size: clamp(1.9rem, 3.6vw, 4rem); line-height: 1.18; overflow-wrap: anywhere; }
+.funny-spotlight--empty { color: var(--fff-quiet); }
+.funny-reveal-count { color: var(--fff-quiet); font-size: .95rem; margin: 0; }
+.funny-revealed-rail { display: flex; overflow-x: auto; gap: 10px; max-width: 100%; padding: 8px; }
+.funny-revealed-rail > div { flex: 0 0 auto; max-width: 280px; padding: 12px; border: 1px solid var(--fff-border); border-radius: 9px; background: var(--fff-muted-paper); overflow-wrap: anywhere; }
+.funny-revealed-rail small { margin-right: 8px; color: var(--fff-quiet); }
+.funny-standings { display: grid; width: min(100%, 890px); margin: 0 auto; gap: 10px; }
+.funny-standing { display: flex; align-items: center; gap: 14px; min-height: 70px; background: var(--fff-muted-paper); border: 1.5px solid var(--fff-border); padding: 12px clamp(12px,2vw,22px); border-radius: 10px; }
+.funny-standing--first { background: var(--fff-accent); color: var(--fff-accent-ink); }
+.standing-position { font-size: 1.3rem; font-weight: 900; flex: 0 0 32px; }
+.funny-standing > .player-identity { flex: 1; font-size: clamp(1rem,1.25vw,1.35rem); }
+.funny-standing > strong { font-size: clamp(1.1rem,1.5vw,1.55rem); white-space: nowrap; }
+.funny-standing > strong small { font-size: .7em; font-weight: 500; }
+.funny-winner { margin: 14px auto 0; text-align: center; font-size: clamp(1.3rem,2vw,2.3rem); font-weight: 900; }

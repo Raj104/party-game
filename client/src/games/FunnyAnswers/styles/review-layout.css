@@ -1,0 +1,122 @@
+/* Review phase, tablet layout, and compact host menus. */
+/* Desktop reading/review phase: fit the question and up to ten
+   80-character submissions in a denser, readable board. Phones retain their
+   existing one-column cards and natural page scrolling. TV layout is separate. */
+@media (min-width: 701px) {
+  .app.app--room .funny-board--review .funny-prompt {
+    font-size: clamp(1.6rem, min(2.45vw, 4.0vh), 2.75rem);
+    line-height: 1.13;
+    max-width: 56ch;
+    margin: 6px 0 12px;
+    letter-spacing: -.035em;
+  }
+  .app.app--room .funny-board--review .funny-status-text {
+    font-size: clamp(.95rem, 1.1vw, 1.1rem);
+    margin: 0 0 11px;
+  }
+  .app.app--room .funny-board--review .funny-answers-grid--board {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 215px), 1fr));
+    gap: clamp(7px, .9vw, 12px);
+    align-items: stretch;
+  }
+  .app.app--room .funny-board--review .funny-answers-grid--board .funny-answer-card {
+    min-height: 0;
+    padding: clamp(10px, 1vw, 15px);
+  }
+  .app.app--room .funny-board--review .funny-answer-card p {
+    font-size: clamp(.96rem, 1.03vw, 1.12rem);
+    line-height: 1.28;
+    margin: 7px 0 3px;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Tablet phase width, compact timer popover and centered review.
+   Targets the player UI only. Shared-TV viewport fitting is unchanged. */
+
+/* Short labels should produce a genuinely small host menu, not a 250px box. */
+.app.app--room .funny-timer-menu {
+  border-radius: 10px;
+}
+.app.app--room .funny-timer-menu button {
+  border-radius: 6px;
+  font-size: .875rem;
+  line-height: 1.2;
+}
+
+/* Between mobile and desktop, the old two-column grid constricted the round
+   label and clock to the question column. Put the header on a whole row, then
+   the prompt and interaction on their own full-width rows. */
+@media (min-width: 701px) and (max-width: 1200px) {
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--submission),
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(12px, 1.8vw, 22px);
+    min-height: 0;
+    align-content: start;
+  }
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--submission) > .funny-board,
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) > .funny-board {
+    display: contents;
+  }
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--submission) .funny-board-top,
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) .funny-board-top {
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    min-width: 0;
+    width: 100%;
+    gap: 12px;
+    padding-bottom: 2px;
+  }
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--submission) .funny-board-core,
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) .funny-board-core {
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    min-width: 0;
+  }
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--submission) > .funny-interaction,
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) > .funny-interaction {
+    grid-column: 1;
+    grid-row: 3;
+    width: 100%;
+    max-width: min(100%, 960px);
+    min-width: 0;
+    margin: 0 auto;
+    box-sizing: border-box;
+    align-self: auto;
+  }
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--submission) .funny-board .funny-prompt,
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) .funny-board .funny-prompt {
+    max-width: 100%;
+    font-size: clamp(1.9rem, 3.9vw, 3.2rem);
+    line-height: 1.13;
+    margin: 8px 0 18px;
+    overflow-wrap: break-word;
+    word-break: normal;
+  }
+  .app.app--room .funny-player-game:not(.funny-player-game--spectator):has(.funny-board--voting) .funny-vote-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Review only: don't change the question. Place bounded answer cards as one
+   centered group and center that group within a modest height on desktops.
+   Ten long answers may need normal page scrolling on shorter windows. */
+@media (min-width: 701px) {
+  .app.app--room .funny-board--review .funny-answers-grid--board {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 195px), 240px));
+    justify-content: center;
+    align-content: center;
+    min-height: clamp(165px, 28vh, 300px);
+    gap: clamp(8px, 1vw, 14px);
+  }
+}

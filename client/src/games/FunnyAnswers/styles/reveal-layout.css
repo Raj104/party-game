@@ -1,0 +1,75 @@
+/* Answer reveal presentation and responsive grid. */
+/* Reveal phase: use space for words, not an empty card.
+   Player desktop and shared TV only. Phone readability/normal scrolling preserved. */
+@media (min-width: 701px) {
+  .app.app--room .funny-board--reveal .funny-prompt {
+    font-size: clamp(1.85rem, min(2.75vw, 4.7vh), 3.15rem);
+    line-height: 1.12;
+    max-width: 44ch;
+    margin: clamp(8px, 1vh, 14px) 0 clamp(12px, 1.5vh, 20px);
+    overflow-wrap: break-word;
+  }
+  .app.app--room .funny-board--reveal .funny-reveal-area { gap: clamp(6px, 1vh, 12px); }
+  .app.app--room .funny-board--reveal .funny-spotlight {
+    width: min(100%, 840px);
+    min-height: clamp(135px, 18vh, 225px);
+    padding: clamp(14px, 2vh, 25px);
+    gap: 10px;
+  }
+  .app.app--room .funny-board--reveal .funny-spotlight--empty {
+    font-size: clamp(1.4rem, min(1.9vw, 3vh), 2.15rem);
+    font-weight: 650;
+    line-height: 1.25;
+  }
+  .app.app--room .funny-board--reveal .funny-spotlight > strong {
+    font-size: clamp(1.65rem, min(2.55vw, 4vh), 3rem);
+    line-height: 1.15;
+  }
+  .app.app--room .funny-board--reveal .funny-revealed-rail {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 225px), 1fr));
+    gap: 9px;
+    overflow: visible;
+    padding: 4px;
+  }
+  .app.app--room .funny-board--reveal .funny-revealed-rail > div {
+    min-width: 0;
+    max-width: none;
+    padding: 9px 11px;
+    font-size: clamp(.88rem, 1vw, 1.07rem);
+    line-height: 1.27;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* TVs already have automatic viewport fitting. Compact the placeholder and
+   give both short placeholders and actual revealed answers readable typography. */
+.tv-screen--playing .funny-board--reveal .funny-prompt {
+  font-size: clamp(1.75rem, min(2.5vw, 4.6vh), 3rem);
+  max-width: 48ch;
+  line-height: 1.1;
+  margin: 4px auto clamp(8px, 1.3vh, 16px);
+}
+.tv-screen--playing .funny-board--reveal .funny-reveal-area {
+  gap: clamp(5px, .9vh, 10px);
+}
+.tv-screen--playing .funny-board--reveal .funny-spotlight {
+  width: min(100%, 940px);
+  min-height: clamp(120px, 18vh, 225px);
+  padding: clamp(14px, 2vh, 26px);
+  gap: 8px;
+}
+.tv-screen--playing .funny-board--reveal .funny-spotlight--empty {
+  font-size: clamp(1.5rem, min(2.4vw, 3.5vh), 2.7rem);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.tv-screen--playing .funny-board--reveal .funny-spotlight > strong {
+  font-size: clamp(1.8rem, min(3vw, 4.6vh), 3.5rem);
+  line-height: 1.16;
+}
+.tv-screen--playing .funny-board--reveal .funny-revealed-rail > div {
+  font-size: clamp(.9rem, min(1.15vw, 2vh), 1.15rem);
+  line-height: 1.25;
+}

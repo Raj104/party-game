@@ -1,0 +1,181 @@
+/* Game card color, carousel sizing, and game setup view. */
+/* permanent game accents, compact navigation, stable selection footprint. */
+.game-choice-card--funny_answers, .game-detail-page--funny_answers { --game-surface: #d48c7c; }
+.game-choice-card--drawing_telephone, .game-detail-page--drawing_telephone { --game-surface: #ad9dc5; }
+.game-choice-card--meme_battle, .game-detail-page--meme_battle { --game-surface: #ddbd65; }
+.game-choice-card--mafia, .game-detail-page--mafia { --game-surface: #adbb8e; }
+.game-choice-card--codenames, .game-detail-page--codenames { --game-surface: #9dbcd0; }
+.game-choice-card--dumb_charades, .game-detail-page--dumb_charades { --game-surface: #dba180; }
+
+.app.app--room .game-choice-card,
+.app.app--room .game-choice-card.game-choice-selected {
+  background: var(--game-surface);
+  color: #292521;
+  border-color: rgba(42, 34, 29, .48);
+  transition: filter .15s ease, box-shadow .15s ease;
+}
+.app.app--room .game-choice-card:hover:not(:disabled) { filter: brightness(1.04); }
+.app.app--room .game-choice-card:focus-visible { outline: 3px solid var(--fff-focus); outline-offset: 2px; }
+.app.app--room .game-choice-card.game-choice-selected { box-shadow: inset 0 0 0 3px #35302b; }
+.app.app--room .game-choice-card small,
+.app.app--room .game-choice-card.game-choice-selected small,
+.app.app--room .game-choice-card--funny_answers small { color: #4b3e36; }
+.app.app--room .game-choice-card .game-choice-doodle { color: #292521; }
+.app.app--room .game-choice-card .game-selected-label { font-size: .78rem; font-weight: 800; color: #292521; }
+
+/* The stage is identical in height in browse and detail mode, avoiding the
+   expanding room panel. Long content scrolls *inside* the selected game. */
+.app.app--room .game-selection-stage {
+  min-width: 0;
+}
+.app.app--room .game-browse-view {
+  height: 100%; min-height: 0; display: flex; flex-direction: column;
+}
+.app.app--room .game-browse-view .selection-heading {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 16px; margin: 0 0 12px;
+}
+.app.app--room .game-browse-view .selection-heading-left { min-width: 0; }
+.app.app--room .game-browse-view .selection-heading-left h2 {
+  font-size: clamp(2rem, 3.3vw, 3.5rem); margin: 0 0 8px;
+}
+.app.app--room .game-browse-view .game-carousel-controls {
+  display: flex; align-items: center; gap: 9px;
+}
+.app.app--room .game-browse-view .game-carousel-controls button {
+  min-width: 36px; min-height: 36px; padding: 5px 10px;
+}
+.app.app--room .game-browse-view .game-carousel-page { font-size: .9rem; }
+.app.app--room .game-browse-view .game-carousel { min-height: 0;
+}
+.app.app--room .game-browse-view .game-carousel > .game-choice-card {
+  height: 100%; min-height: 0;
+}
+.app.app--room .game-browse-view .game-phase-actions { padding-top: 8px; }
+.app.app--room .game-browse-view .game-phase-actions button { min-height: 36px; padding: 6px 12px; }
+.app.app--room .game-browse-view .game-waiting-note { margin: 0; padding: 8px 0 0; }
+.game-host-pick-control {
+  background: transparent; color: var(--fff-ink); border: 1.5px solid var(--fff-border);
+  border-radius: 8px; padding: 8px 13px; font-size: .89rem;
+  font-weight: 800; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+}
+.game-host-pick-control:hover { background: var(--fff-muted-paper); }
+.game-host-pick-control:focus-visible { outline: 3px solid var(--fff-focus); outline-offset: 2px; }
+
+/* Detail uses the same fixed accent color as its game card. */
+.app.app--room .game-selection-stage .game-detail-page {
+  height: 100%; min-height: 0; overflow-y: auto;
+  background: var(--game-surface); color: #292521;
+  --game-text: #292521; --game-faded: #493e37; --game-line: rgba(42, 34, 29, .35);
+}
+.game-detail-top-actions { display: flex; align-items: center; gap: 12px; }
+.game-detail-top-actions .game-host-pick-control {
+  border-color: var(--game-line); color: var(--game-text);
+  padding: 6px 11px;
+}
+.game-detail-top-actions .game-host-pick-control:hover { background: rgba(0,0,0,.08); }
+.app.app--room .game-selection-stage .game-detail-columns {
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.25fr);
+}
+.app.app--room .game-selection-stage .game-detail-icon {
+  height: 44px; width: 44px; font-size: 1.8rem; margin-bottom: 8px;
+  background: rgba(255,255,255,.26);
+}
+.app.app--room .game-selection-stage .game-detail-identity h2 {
+  font-size: clamp(1.7rem, 2.5vw, 2.7rem); margin: 0 0 8px;
+}
+.app.app--room .game-selection-stage .game-detail-identity p { margin-bottom: 7px; }
+.app.app--room .game-selection-stage .game-detail-rules h3 { font-size: clamp(1.1rem, 1.45vw, 1.55rem); margin: 0 0 7px; }
+.app.app--room .game-selection-stage .game-detail-footer { gap: 10px; align-items: center;
+}
+.app.app--room .game-selection-stage .game-detail-play { font-size: 1rem; }
+
+@media (max-width: 850px) {
+  .app.app--room .game-browse-view .game-carousel { grid-auto-columns: 100%; }
+  .app.app--room .game-selection-stage { height: 510px; }
+  .app.app--room .game-selection-stage .game-detail-columns { grid-template-columns: 1fr; gap: 16px; }
+}
+@media (max-width: 600px) {
+  .app.app--room .game-selection-stage { height: 520px; }
+  .app.app--room .game-browse-view .selection-heading { align-items: center; }
+  .app.app--room .game-browse-view .selection-heading-left h2 { font-size: 2rem; }
+  .app.app--room .game-selection-stage .game-detail-page { padding: 15px; }
+  .app.app--room .game-selection-stage .game-detail-topline { gap: 8px; }
+  .game-detail-top-actions { gap: 8px; }
+  .game-detail-overline { font-size: .7rem; }
+  .game-host-pick-control { font-size: .78rem; padding: 7px 9px; }
+  .app.app--room .game-selection-stage .game-detail-identity h2 { font-size: 1.75rem; }
+  .app.app--room .game-selection-stage .game-detail-rules li { font-size: .96rem; }
+  .app.app--room .game-selection-stage .funny-setup--integrated { gap: 9px; }
+}
+
+/* start directly in game browser; more breathing room in the same stage. */
+.app.app--room .game-selection-stage .game-detail-title-row {
+  display: flex; align-items: center; gap: clamp(12px, 1.3vw, 20px);
+  min-width: 0; margin-bottom: 7px;
+}
+.app.app--room .game-selection-stage .game-detail-title-row .game-detail-icon {
+  margin: 0; flex-shrink: 0; width: clamp(48px, 3.1vw, 60px);
+  height: clamp(48px, 3.1vw, 60px); font-size: clamp(1.8rem, 2.2vw, 2.4rem);
+}
+.app.app--room .game-selection-stage .game-detail-title-row h2 {
+  margin: 0; line-height: 1.08; font-size: clamp(1.8rem, 2.65vw, 3rem);
+}
+.game-detail-mini-label {
+  display: block; font-size: .67rem; font-weight: 900;
+  letter-spacing: .15em; color: var(--game-faded); margin: 7px 0 14px;
+}
+.app.app--room .game-selection-stage .game-detail-count {
+  display: block; font-weight: 850; font-size: .96rem;
+}
+.app.app--room .game-selection-stage .game-detail-columns {
+  gap: clamp(22px, 3vw, 54px);
+}
+.app.app--room .game-selection-stage .game-detail-setting-label {
+  font-size: 1.08rem; line-height: 1.35;
+}
+.app.app--room .game-selection-stage .game-detail-round-choice { gap: 12px; }
+.app.app--room .game-selection-stage .game-detail-round-option { display: inline-flex;
+  align-items: center; justify-content: center; font-size: .97rem;
+}
+.app.app--room .game-detail-round-choice--readonly .game-detail-round-option,
+.app.app--room .game-detail-round-choice--readonly .game-detail-round-option:has(input:disabled) {
+  opacity: 1; cursor: default;
+}
+.game-detail-host-choice { color: var(--game-faded); font-weight: 700; }
+.app.app--room .game-selection-stage .game-detail-play { padding: 13px 24px; min-height: 48px; }
+
+/* TV remains a two-column layout: join QR fills part of the existing left column. */
+.tv-host-room-title {
+  font-size: clamp(1.15rem, 1.6vw, 1.9rem);
+  font-weight: 800; line-height: 1.15; text-align: right;
+  max-width: min(45vw, 600px); overflow-wrap: break-word;
+}
+.tv-join-qr {
+  display: flex; align-items: center; gap: clamp(14px, 1.5vw, 26px);
+  margin-top: clamp(18px, 2vw, 34px); max-width: 640px;
+}
+.tv-join-qr-image {
+  flex: 0 0 auto; background: #fffdf5; color: #252320;
+  border-radius: 9px; padding: 9px; display: grid; place-items: center;
+  border: 1px solid var(--fff-border);
+}
+.tv-join-qr-image canvas { display: block; width: clamp(112px, 9vw, 188px); height: auto; }
+.tv-join-qr-copy { min-width: 0; display: grid; gap: 7px; line-height: 1.3; }
+.tv-join-qr-copy strong { font-size: clamp(1.15rem, 1.6vw, 1.9rem); }
+.tv-join-qr-copy > span { font-size: clamp(.9rem, 1vw, 1.15rem); }
+.tv-join-qr-copy small { color: var(--fff-quiet); font-size: .8rem; line-height: 1.35; }
+@media (max-width: 850px) {
+  .app.app--room .game-selection-stage .game-detail-columns { gap: 22px; }
+  .app.app--room .game-selection-stage .game-detail-identity p { margin-bottom: 10px; }
+  .app.app--room .game-selection-stage .game-detail-page { justify-content: flex-start; }
+  .app.app--room .game-selection-stage .game-detail-footer { margin-top: auto; }
+  .tv-join-qr { gap: 14px; }
+}
+@media (max-width: 600px) {
+  .app.app--room .game-selection-stage .game-detail-title-row h2 { font-size: clamp(1.45rem, 6vw, 2rem); }
+  .app.app--room .game-selection-stage .game-detail-title-row .game-detail-icon { width: 45px; height: 45px; }
+  .game-detail-mini-label { margin: 3px 0 8px; }
+  .app.app--room .game-selection-stage .game-detail-rounds { gap: 7px; }
+  .tv-join-qr-image canvas { width: 108px; }
+}

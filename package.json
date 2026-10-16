@@ -1,0 +1,14 @@
+{
+  "name": "fff-party-game",
+  "private": true,
+  "version": "4.18.0",
+  "description": "FFF — Fun With Friends & Family party game",
+  "scripts": {
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build": "npm --prefix client run build",
+    "lint": "npm --prefix client run lint",
+    "test": "npm --prefix server run test:funny && node --test server/tests/room-lifecycle.test.cjs",
+    "check:styles": "node scripts/check-styles.mjs"
+  }
+}

@@ -1,0 +1,241 @@
+/* Active TV gameplay invite footer, captions, progress bars, and room code. */
+/* TV room invite is always visible, outside the scaled game board.
+   Reserve space as a normal flex child; do not position over gameplay cards. */
+.tv-screen .tv-permanent-invite {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(12px, 2vw, 32px);
+  width: 100%;
+  padding-top: clamp(9px, 1.3vh, 16px);
+  border-top: 1px solid var(--fff-border);
+  color: var(--fff-ink);
+}
+.tv-permanent-room-code, .tv-permanent-qr { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tv-permanent-room-code > span, .tv-permanent-qr > span {
+  font-size: clamp(.63rem, .8vw, .86rem);
+  font-weight: 850;
+  color: var(--fff-quiet);
+  letter-spacing: .1em;
+}
+.tv-permanent-room-code > strong {
+  font-size: clamp(1.15rem, 1.8vw, 2rem);
+  letter-spacing: -.025em;
+  line-height: 1.14;
+  overflow-wrap: anywhere;
+}
+.tv-permanent-qr { align-items: flex-end; flex: 0 0 auto; }
+.tv-screen .tv-permanent-qr .tv-join-qr--compact { margin: 0; padding: 0; display: block; }
+.tv-screen .tv-permanent-qr .tv-join-qr-image {
+  padding: 5px;
+  background: #fffdf5;
+  border-color: #a8a19a;
+  border-radius: 7px;
+}
+.tv-screen .tv-permanent-qr .tv-join-qr-image canvas {
+  display: block;
+  width: clamp(76px, 6vw, 112px);
+  height: auto;
+}
+/* Short displays need less footer space so the board stays readable. */
+@media (max-height: 740px) {
+  .tv-screen .tv-permanent-invite { padding-top: 6px; }
+  .tv-screen .tv-permanent-qr .tv-join-qr-image canvas { width: clamp(72px, 5.4vw, 94px); }
+  .tv-permanent-room-code > strong { font-size: clamp(1.05rem, 1.5vw, 1.55rem); }
+}
+@media (max-width: 550px) {
+  .tv-screen .tv-permanent-qr .tv-join-qr-image canvas { width: 72px; }
+  .tv-permanent-room-code > strong { font-size: 1.12rem; }
+}
+/* Compact TV/embedded browsers: the previous minimum board height can exceed the
+   viewport after reserving the invitation strip. Let the fitter use natural height. */
+@media (max-height: 680px) {
+  .tv-screen--playing .tv-game-stage .funny-board-core {
+    min-height: 0;
+    gap: clamp(8px, 1.4vh, 14px);
+  }
+  .tv-screen--playing .tv-game-stage .funny-answer-tile { min-height: 125px; }
+}
+
+
+/* top-align the shared TV question during answer submission.
+   Only the submission stage is affected. The reveal, review, voting, results,
+   and final standings retain their previous positioning and animations. */
+.tv-screen--playing .tv-game-stage--submission .tv-fit-content {
+  top: 0;
+  transform-origin: top center;
+}
+.tv-screen--playing .tv-game-stage--submission .funny-board-core {
+  min-height: 0;
+  justify-content: flex-start;
+  gap: clamp(12px, 2vh, 24px);
+  padding-top: clamp(24px, 4vh, 48px);
+}
+
+
+/* preserve the original pre-game lobby. Only the playing TV uses this footer. */
+.tv-screen--playing .tv-game-invite.tv-permanent-invite {
+  column-gap: clamp(12px, 2vw, 28px);
+  border-top: 1px solid var(--fff-border);
+}
+.tv-screen--playing .tv-game-invite .tv-permanent-room-code {
+  justify-self: center;
+  align-self: center;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+}
+.tv-screen--playing .tv-game-invite .tv-permanent-room-code > strong {
+  font-size: clamp(1rem, 1.55vw, 1.6rem);
+  line-height: 1.12;
+}
+.tv-screen--playing .tv-game-invite .tv-permanent-room-code > span {
+  font-size: clamp(.6rem, .72vw, .78rem);
+}
+.tv-screen--playing .tv-game-invite .tv-game-host-title {
+  min-width: 0;
+}
+/* Mirror the answer-submission progress indicator during voting on the TV. */
+.tv-screen--playing .tv-game-stage .funny-board--voting .funny-status--votes {
+  margin: 0 auto;
+  font-size: clamp(1.4rem, 2vw, 2.5rem);
+  text-align: center;
+  width: min(68vw, 900px);
+  max-width: 100%;
+}
+.tv-screen--playing .tv-game-stage .funny-board--voting .funny-status--votes .status-track {
+  width: 100%;
+  height: 18px;
+}
+@media (max-height: 740px) {
+  .tv-screen--playing .tv-game-invite.tv-permanent-invite { padding-top: 4px; }
+  .tv-screen--playing .tv-game-invite .tv-permanent-qr .tv-join-qr-image canvas { width: 64px; }
+}
+@media (max-width: 650px) {
+  .tv-screen--playing .tv-game-invite.tv-permanent-invite {
+    grid-template-columns: minmax(60px, 1fr) minmax(92px, 1.3fr) minmax(80px, 1fr);
+    gap: 8px;
+  }
+  .tv-screen--playing .tv-game-invite .tv-permanent-room-code > strong { font-size: clamp(.83rem, 2.9vw, 1.1rem); }
+  .tv-screen--playing .tv-game-invite .tv-game-host-title { font-size: clamp(.78rem, 2.5vw, .98rem); }
+}
+
+
+/* Shared TV only: align progress, anchor phase guidance above the
+   invite footer, and compact that footer. Never change the player UI or lobby QR. */
+
+/* Submission + voting are the same centered width, including the entire track.
+   Previously the submission track was wider than its text-width parent. */
+.tv-screen--playing .tv-game-stage .funny-board--submission .funny-status,
+.tv-screen--playing .tv-game-stage .funny-board--voting .funny-status--votes {
+  display: block;
+  width: min(68vw, 900px);
+  max-width: 100%;
+  margin-inline: auto;
+  text-align: center;
+  box-sizing: border-box;
+}
+.tv-screen--playing .tv-game-stage .funny-board--submission .funny-status .status-track,
+.tv-screen--playing .tv-game-stage .funny-board--voting .funny-status--votes .status-track {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin: clamp(7px, 1vh, 11px) auto 0;
+  height: clamp(11px, 1.6vh, 16px);
+}
+
+/* A normal flex child after the fitted board consumes none of its transform,
+   so every game phase's instructional caption sits directly above the footer. */
+.tv-screen--playing .tv-game-stage .tv-game-caption {
+  flex: 0 0 auto;
+  align-self: center;
+  width: 100%;
+  margin: 0;
+  padding: clamp(5px, .9vh, 10px) 12px clamp(8px, 1.1vh, 13px);
+  font-size: clamp(.85rem, min(1.35vw, 2.1vh), 1.25rem);
+  font-weight: 650;
+  line-height: 1.25;
+  color: var(--fff-quiet);
+  text-align: center;
+}
+/* Review guidance is now in the caption slot, not repeated inside the board. */
+.tv-screen--playing .tv-game-stage .funny-board--review .funny-status-text {
+  display: none;
+}
+
+/* the earlier QR was 64–84px; 60% of that is ~38–50px.
+   With less padding, the footer occupies roughly four-fifths of its old height. */
+.tv-screen--playing .tv-game-invite.tv-permanent-invite {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(55px, 1fr) minmax(0, 2fr);
+  align-items: start;
+  gap: clamp(8px, 1.2vw, 18px);
+  min-height: 0;
+  padding-top: clamp(3px, .5vh, 7px);
+  padding-bottom: 0;
+}
+.tv-screen--playing .tv-game-invite .tv-permanent-qr {
+  align-self: start;
+  justify-self: start;
+  align-items: flex-start;
+}
+.tv-screen--playing .tv-game-invite .tv-permanent-qr .tv-join-qr-image {
+  padding: 2px;
+  border-radius: 4px;
+}
+.tv-screen--playing .tv-game-invite .tv-permanent-qr .tv-join-qr-image canvas {
+  width: clamp(38px, 2.64vw, 50px);
+  height: auto;
+}
+/* Make the host title 200% of its earlier size, anchored top/right. */
+.tv-screen--playing .tv-game-invite .tv-game-host-title {
+  justify-self: end;
+  align-self: start;
+  max-width: 100%;
+  font-size: clamp(1.96rem, 2.9vw, 3.1rem);
+  font-weight: 850;
+  line-height: 1.05;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+/* Room code occupies the original host-title position in the game HUD. */
+.tv-screen--playing .tv-header-room-code {
+  min-width: 0;
+  max-width: min(45vw, 600px);
+  font-size: clamp(1.15rem, 1.65vw, 1.8rem);
+  font-weight: 850;
+  line-height: 1.12;
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+
+/* The pre-game lobby is deliberately unchanged except its small bottom
+   FFF/game caption, which the user wants centered rather than right-justified. */
+.tv-screen:not(.tv-screen--playing) .tv-footer {
+  align-self: stretch;
+  text-align: center;
+}
+
+@media (max-height: 740px) {
+  .tv-screen--playing .tv-game-invite .tv-permanent-qr .tv-join-qr-image canvas {
+    width: clamp(38px, 2.64vw, 50px);
+  }
+  .tv-screen--playing .tv-game-stage .tv-game-caption {
+    padding-top: 4px;
+    padding-bottom: 5px;
+  }
+}
+@media (max-width: 650px) {
+  .tv-screen--playing .tv-game-invite.tv-permanent-invite {
+    grid-template-columns: minmax(45px, 1fr) minmax(0, 3fr);
+  }
+  .tv-screen--playing .tv-game-invite .tv-game-host-title {
+    font-size: clamp(1.25rem, 4.5vw, 2rem);
+  }
+  .tv-screen--playing .tv-header-room-code {
+    max-width: 45vw;
+    font-size: clamp(.9rem, 2.5vw, 1.2rem);
+  }
+}
