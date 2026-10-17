@@ -1,5 +1,6 @@
 import type { Server, Socket } from "socket.io";
 import { MAX_PLAYERS } from "../config";
+import { allowNewRoom, fixedWindowLimiter, MAX_ACTIVE_ROOMS } from "../security";
 import {
   createPlayer, generateRoomCode, leaveRoom, nameTaken, publicRoom,
   rooms, updateRoom, refreshRoomIdleTimer, removePlayer, promoteConnectedHost, validateCharacter, validateName,
@@ -10,10 +11,20 @@ import { registerGameEvents } from "./registerGameEvents";
 
 export function registerRoomEvents(io: Server, socket: Socket) {
   console.log("Connected:", socket.id);
+  const allowRoomAction = fixedWindowLimiter(30, 60_000);
+  const allowCreation = fixedWindowLimiter(4, 60_000);
 
   socket.on("create_room", (rawName, rawCharacterOrCallback, maybeCallback) => {
     const callback = typeof rawCharacterOrCallback === "function" ? rawCharacterOrCallback : maybeCallback;
     if (typeof callback !== "function") return;
+    if (!allowRoomAction() || !allowCreation() || !allowNewRoom()) {
+      callback({ ok: false, error: "Too many room requests. Please wait a minute." });
+      return;
+    }
+    if (rooms.size >= MAX_ACTIVE_ROOMS) {
+      callback({ ok: false, error: "The server is busy. Please try later." });
+      return;
+    }
     const character = validateCharacter(typeof rawCharacterOrCallback === "function" ? undefined : rawCharacterOrCallback);
     const name = validateName(rawName);
     if (!name) {
@@ -47,6 +58,10 @@ export function registerRoomEvents(io: Server, socket: Socket) {
   socket.on("join_room", (rawCode, rawName, rawCharacterOrCallback, maybeCallback) => {
     const callback = typeof rawCharacterOrCallback === "function" ? rawCharacterOrCallback : maybeCallback;
     if (typeof callback !== "function") return;
+    if (!allowRoomAction()) {
+      callback({ ok: false, error: "Too many room requests. Please wait a minute." });
+      return;
+    }
     const character = validateCharacter(typeof rawCharacterOrCallback === "function" ? undefined : rawCharacterOrCallback);
     const name = validateName(rawName);
     const code = normalizeRoomCode(rawCode) ?? "";
@@ -83,6 +98,10 @@ export function registerRoomEvents(io: Server, socket: Socket) {
 
   socket.on("resume_room", (rawCode, rawToken, callback) => {
     if (typeof callback !== "function") return;
+    if (!allowRoomAction()) {
+      callback({ ok: false, error: "Too many room requests. Please wait a minute." });
+      return;
+    }
     const code = normalizeRoomCode(rawCode) ?? "";
     const token = typeof rawToken === "string" ? rawToken : "";
     const room = rooms.get(code);
@@ -121,6 +140,10 @@ export function registerRoomEvents(io: Server, socket: Socket) {
 
   socket.on("watch_room", (rawCode, callback) => {
     if (typeof callback !== "function") return;
+    if (!allowRoomAction()) {
+      callback({ ok: false, error: "Too many room requests. Please wait a minute." });
+      return;
+    }
     const code = normalizeRoomCode(rawCode) ?? "";
     const room = rooms.get(code);
     if (!room) {
