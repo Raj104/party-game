@@ -101,7 +101,7 @@ function featurePlayers(
  * Categories, templates and selected names are shuffled anew each game.
  */
 export function createFunnyPrompts(participants: FunnyParticipant[], rounds: 3 | 5): FunnyPrompt[] {
-  if (participants.length < 3 || participants.length > 10) throw new Error("Funny Answers needs 3–10 players.");
+  if (participants.length < 3 || participants.length > 10) throw new Error("Hot Take needs 3–10 players.");
   const categories: FunnyPromptCategory[] = ["solo", "duo", "group"];
   if (rounds === 5) categories.push(...shuffle<FunnyPromptCategory>(["solo", "duo", "group"]).slice(0, 2));
   const appearances = new Map(participants.map((person) => [person.id, 0]));

@@ -10,7 +10,7 @@
 .tv-screen--playing .funny-answer-tile:not(.funny-reveal-card) {
   position: relative;
 }
-/* Remove the corner number from the layout, so answer text is centered on the
+/* Remove the corner number from the z, so answer text is centered on the
    card itself instead of being pushed downward by the number's line height. */
 .funny-reveal-deck .funny-reveal-card.funny-answer-tile > .funny-answer-number {
   position: absolute;
@@ -42,7 +42,9 @@
   font-weight: 750;
   line-height: 1.18;
   text-align: center;
-  overflow-wrap: anywhere;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
   white-space: pre-wrap;
 }
 

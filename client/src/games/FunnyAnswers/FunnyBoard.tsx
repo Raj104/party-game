@@ -233,7 +233,7 @@ export function FunnyBoard({ game, players, serverNow, isDisplay = false, showAn
   return (
     <section className={`funny-board funny-board--${game.stage}${isDisplay ? " funny-board-tv" : ""}`} aria-live="polite">
       <div className="funny-board-top">
-        <span className="game-eyebrow">FUNNY ANSWERS · {final ? "THAT'S A WRAP" : `ROUND ${game.round} / ${game.totalRounds}`}</span>
+        <span className="game-eyebrow">HOT TAKE · {final ? "THAT'S A WRAP" : `ROUND ${game.round} / ${game.totalRounds}`}</span>
         <div className="funny-clock-actions">
           {seconds !== null && <span className="funny-time" aria-label={game.paused ? "Timer paused" : "Time remaining"}>
             ◷ {seconds}s{game.paused ? " · Paused" : ""}

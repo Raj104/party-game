@@ -23,7 +23,7 @@ export function FunnyGame({ room, privateState, playerId, isHost, connected, bus
 
   useEffect(() => { setDraft(savedAnswer); }, [savedAnswer, activeRound]);
   useEffect(() => { setChoice(null); }, [activeRound]);
-  if (!game) return <p>Loading Funny Answers...</p>;
+  if (!game) return <p>Loading Hot Take...</p>;
 
   const playing = Boolean(playerId && game.participantIds.includes(playerId));
   const disabled = !connected || busy;

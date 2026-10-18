@@ -45,7 +45,7 @@ export function startFunny(io: Server, room: Room, totalRounds: number): string 
   if ((room.phase !== "instructions" && room.phase !== "selection") || room.selectedGame !== "funny_answers") return "Select Funny Answers first.";
   if (totalRounds !== 3 && totalRounds !== 5) return "Choose 3 or 5 rounds.";
   const players = room.players.filter((player) => player.socketId !== null);
-  if (players.length < 3 || players.length > 10) return "Funny Answers needs 3–10 connected players.";
+  if (players.length < 3 || players.length > 10) return "Hot Take needs 3–10 connected players.";
   if (room.funny) stopFunnyTimer(room.funny);
   const game: FunnyState = {
     participants: players.map((p) => ({ id: p.id, name: p.name, character: p.character })),
@@ -159,7 +159,7 @@ export function controlFunnyReveal(io: Server, room: Room, command: unknown): st
 /** All phases share one server-owned pause / resume / skip control. */
 export function controlFunnyTimer(io: Server, room: Room, command: unknown): string | null {
   const game = room.funny;
-  if (!game || room.phase !== "playing") return "No Funny Answers game is running.";
+  if (!game || room.phase !== "playing") return "No Hot Take game is running.";
   if (game.stage === "finished") return "The game has finished.";
   if (command === "skip") {
     // Skip the current phase while retaining the host's timer preference.
@@ -274,7 +274,7 @@ function advanceAfterResults(io: Server, room: Room) {
 /** Host-only early advance for the currently timed/reveal phase. */
 export function skipFunnyPhase(io: Server, room: Room): string | null {
   const game = room.funny;
-  if (!game || room.phase !== "playing") return "No Funny Answers game is running.";
+  if (!game || room.phase !== "playing") return "No Hot Take game is running.";
   switch (game.stage) {
     case "submission":
       closeSubmissions(io, room);

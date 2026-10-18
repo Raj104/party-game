@@ -57,7 +57,7 @@ export function FunnyDisplay({ room }: Props) {
     <div className={`tv-game-stage tv-game-stage--${game.stage}`}>
       <div className="tv-game-hud">
         <span className="tv-game-round">
-          FUNNY ANSWERS · {game.stage === "finished" ? "FINAL STANDINGS" : `ROUND ${game.round} / ${game.totalRounds}`}
+          HOT TAKE · {game.stage === "finished" ? "FINAL STANDINGS" : `ROUND ${game.round} / ${game.totalRounds}`}
         </span>
         {seconds !== null && (
           <span className="tv-game-countdown" aria-label={game.paused ? "Timer paused" : "Time remaining"}>

@@ -6,7 +6,7 @@ import type { GameId, GameInfo } from "../types/party";
 export const GAMES: GameInfo[] = [
   {
     id: "funny_answers",
-    title: "Funny Answers",
+    title: "Hot Take",
     emoji: "💬",
     glyph: "✳",
     available: true,
