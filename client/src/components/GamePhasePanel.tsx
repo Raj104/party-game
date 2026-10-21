@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { GAMES, findGame } from "../data/games";
+import { GAMES, findGame, gameAccent } from "../data/games";
+import type { CSSProperties } from "react";
 import type { GameId, Room } from "../types/party";
 import { GameCard } from "./GameCard";
 import { FunnySetup } from "../games/FunnyAnswers/FunnySetup";
@@ -11,11 +12,10 @@ type Props = {
   busy: boolean;
   onAction: (event: string, gameId?: GameId) => void;
   onSetRounds: (rounds: number) => void;
-  onStartFunny: (rounds: number) => void;
 };
 
 /** The room owns the host's pick. Every player's browsing view stays local. */
-export function GamePhasePanel({ room, isHost, connected, busy, onAction, onSetRounds, onStartFunny }: Props) {
+export function GamePhasePanel({ room, isHost, connected, busy, onAction, onSetRounds }: Props) {
   const [viewedId, setViewedId] = useState<GameId | null>(() => room.selectedGame);
   const [page, setPage] = useState(0);
   const [browsingIndependently, setBrowsingIndependently] = useState(false);
@@ -93,7 +93,7 @@ export function GamePhasePanel({ room, isHost, connected, busy, onAction, onSetR
       {isSelection && (
         <div className="game-selection-stage">
           {viewedGame ? (
-            <div className={`game-detail-page game-detail-page--${viewedGame.id}`} key={viewedGame.id}>
+            <div className={`game-detail-page game-detail-page--${viewedGame.id}`} key={viewedGame.id} style={{"--game-surface":gameAccent(viewedGame.id)} as CSSProperties}>
               <div className="game-detail-topline">
                 <button type="button" className="game-detail-back" onClick={showAll}>← All games</button>
                 {room.selectedGame && !isViewingHostPick && (
@@ -119,7 +119,12 @@ export function GamePhasePanel({ room, isHost, connected, busy, onAction, onSetR
               <div className="game-detail-footer">
                 {viewedGame.id === "funny_answers" && isViewingHostPick ? (
                   <FunnySetup room={room} isHost={isHost} disabled={disabled}
-                    onRoundsChange={onSetRounds} onStart={onStartFunny} />
+                    onRoundsChange={onSetRounds} onStart={()=>onAction("show_game_instructions")} />
+                ) : viewedGame.id === "last_word" && isViewingHostPick ? (
+                  isHost ? <div className="game-detail-start">
+                    {(room.players.length < 3 || room.players.length > 6) && <p className="funny-warning" role="status">3–6 players needed to play.</p>}
+                    <button className="game-detail-play" disabled={disabled || room.players.length < 3 || room.players.length > 6} onClick={()=>onAction("show_game_instructions")}>Let's play →</button>
+                  </div> : <p className="game-detail-wait">Waiting for host to start…</p>
                 ) : (
                   <div className="game-detail-footer-note">
                     {!viewedGame.available

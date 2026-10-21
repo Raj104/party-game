@@ -5,6 +5,7 @@ import {
   createPlayer, generateRoomCode, leaveRoom, nameTaken, publicRoom,
   rooms, updateRoom, refreshRoomIdleTimer, removePlayer, promoteConnectedHost, validateCharacter, validateName,
 } from "../rooms/store";
+import { syncPause } from "../games/lastWordEngine";
 import type { Room } from "../types";
 import { normalizeRoomCode } from "../rooms/roomCodes";
 import { registerGameEvents } from "./registerGameEvents";
@@ -43,6 +44,9 @@ export function registerRoomEvents(io: Server, socket: Socket) {
       selectedGame: null,
       selectedRounds: 3,
       funny: null,
+      lastWord: null,
+      gameReady: {},
+      lastWordReady: {},
       lastScoreboard: null,
     };
     rooms.set(code, room);
@@ -85,6 +89,8 @@ export function registerRoomEvents(io: Server, socket: Socket) {
     leaveRoom(io, socket);
     const player = createPlayer(name, socket, character);
     room.players.push(player);
+    room.lastWordReady[player.id] = false;
+    (room.gameReady ??= {})[player.id] = false;
     promoteConnectedHost(room);
     refreshRoomIdleTimer(io, room);
     socket.join(code);
@@ -127,6 +133,7 @@ export function registerRoomEvents(io: Server, socket: Socket) {
       }
     }
     player.socketId = socket.id;
+    syncPause(io, room);
     promoteConnectedHost(room);
     refreshRoomIdleTimer(io, room);
     socket.join(code);

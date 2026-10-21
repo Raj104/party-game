@@ -1,14 +1,17 @@
 {
   "name": "fff-party-game",
   "private": true,
-  "version": "4.18.0",
-  "description": "FFF — Fun With Friends & Family party game",
+  "version": "5.0.12",
+  "description": "FFF \u2014 Fun With Friends & Family party game",
   "scripts": {
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build": "npm --prefix client run build",
     "lint": "npm --prefix client run lint",
-    "test": "npm --prefix server run test:funny && node --test server/tests/room-lifecycle.test.cjs",
-    "check:styles": "node scripts/check-styles.mjs"
+    "test": "npm --prefix server run test:funny && node --test server/tests/room-lifecycle.test.cjs && node --test server/tests/last-word.test.cjs && node --test server/tests/game-ready.test.cjs && node --test server/tests/game-setup-flow.test.cjs && node --test server/tests/last-word-flight.test.cjs && node --test server/tests/last-word-visual.test.cjs && node --test server/tests/game-copy.test.cjs",
+    "check:styles": "node scripts/check-styles.mjs",
+    "test:last-word": "node --test server/tests/last-word.test.cjs",
+    "test:flight": "node --test server/tests/last-word-flight.test.cjs",
+    "test:visual": "node --test server/tests/last-word-visual.test.cjs"
   }
 }

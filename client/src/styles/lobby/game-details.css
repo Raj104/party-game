@@ -48,10 +48,9 @@
   text-align: left;
 }
 .game-detail-page--drawing_telephone {
-  --game-surface: var(--fff-muted-paper);
-  --game-text: var(--fff-ink);
-  --game-faded: var(--fff-quiet);
-  --game-line: var(--fff-border);
+  --game-text: #25211f;
+  --game-faded: #493a33;
+  --game-line: rgba(42, 34, 29, .33);
 }
 .game-detail-topline, .game-detail-columns, .game-detail-footer { color: var(--game-text); }
 .game-detail-topline { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: clamp(24px, 3vw, 42px); }

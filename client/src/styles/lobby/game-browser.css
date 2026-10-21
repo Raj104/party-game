@@ -1,11 +1,5 @@
 /* Game card color, carousel sizing, and game setup view. */
-/* permanent game accents, compact navigation, stable selection footprint. */
-.game-choice-card--funny_answers, .game-detail-page--funny_answers { --game-surface: #d48c7c; }
-.game-choice-card--drawing_telephone, .game-detail-page--drawing_telephone { --game-surface: #ad9dc5; }
-.game-choice-card--meme_battle, .game-detail-page--meme_battle { --game-surface: #ddbd65; }
-.game-choice-card--mafia, .game-detail-page--mafia { --game-surface: #adbb8e; }
-.game-choice-card--codenames, .game-detail-page--codenames { --game-surface: #9dbcd0; }
-.game-choice-card--dumb_charades, .game-detail-page--dumb_charades { --game-surface: #dba180; }
+/* Accents are assigned by catalog position; first eight are distinct. */
 
 .app.app--room .game-choice-card,
 .app.app--room .game-choice-card.game-choice-selected {

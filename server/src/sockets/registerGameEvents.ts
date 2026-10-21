@@ -1,12 +1,16 @@
 import type { Server, Socket } from "socket.io";
 import { rooms, updateRoom } from "../rooms/store";
 import type { GameId, Room } from "../types";
+import { registerLastWordEvents } from "./registerLastWordEvents";
 import { registerFunnyEvents } from "./registerFunnyEvents";
+import { inPlayerRange, resetReady, setGameReady } from "../games/gameReady";
+import { stopFunnyTimer } from "../games/funnyState";
+import { stopLastWord } from "../games/lastWordEngine";
 
 // Preview-only games are valid room selections, but cannot be started until their
-// own server engine is implemented. Funny Answers is the only playable one.
+// own server engine is implemented. Last Word and Hot Take are currently playable.
 const GAME_IDS: readonly GameId[] = [
-  "funny_answers", "drawing_telephone", "meme_battle", "mafia", "codenames", "dumb_charades",
+  "funny_answers", "last_word", "drawing_telephone", "meme_battle", "mafia", "codenames", "dumb_charades",
 ];
 type ActionCallback = (result: { ok: boolean; error?: string }) => void;
 
@@ -29,6 +33,7 @@ function hostRoom(socket: Socket, callback: ActionCallback): Room | null {
 
 export function registerGameEvents(io: Server, socket: Socket) {
   registerFunnyEvents(io, socket);
+  registerLastWordEvents(io, socket);
   socket.on("open_game_selection", (callback) => {
     if (typeof callback !== "function") return;
     const room = hostRoom(socket, callback);
@@ -56,7 +61,7 @@ export function registerGameEvents(io: Server, socket: Socket) {
       callback({ ok: false, error: "Unknown game." });
       return;
     }
-    if (room.selectedGame !== rawGameId) room.selectedRounds = 3;
+    if (room.selectedGame !== rawGameId) { room.selectedRounds = 3; resetReady(room); }
     // Older rooms can enter the browser without the retired lobby step.
     room.phase = "selection";
     room.selectedGame = rawGameId as GameId;
@@ -104,7 +109,9 @@ export function registerGameEvents(io: Server, socket: Socket) {
       callback({ ok: false, error: "Select a game first." });
       return;
     }
+    if (!inPlayerRange(room)) { callback({ok:false,error:"This game does not support the current room size."}); return; }
     room.phase = "instructions";
+    resetReady(room);
     updateRoom(io, room);
     callback({ ok: true });
   });
@@ -118,8 +125,41 @@ export function registerGameEvents(io: Server, socket: Socket) {
       return;
     }
     room.phase = "selection";
+    resetReady(room);
     updateRoom(io, room);
     callback({ ok: true });
+  });
+
+  // One Ready interaction for every game, including newly added mini-games.
+  socket.on("game_ready", (value: unknown, callback: unknown) => {
+    if (typeof callback !== "function") return;
+    const id = socket.data.playerId as string | undefined;
+    const room = rooms.get(socket.data.roomCode as string);
+    if (!room || !id || socket.data.role !== "player" || room.players.find(p=>p.id===id)?.socketId!==socket.id) {
+      (callback as ActionCallback)({ok:false,error:"Join the room first."}); return;
+    }
+    const error = setGameReady(io, room, id, value);
+    (callback as ActionCallback)(error?{ok:false,error}:{ok:true});
+  });
+
+  socket.on("prepare_game_rematch", (callback: unknown) => {
+    if(typeof callback!=="function") return;
+    const room=hostRoom(socket,callback as ActionCallback);
+    if(!room) return;
+    const lw=room.selectedGame==="last_word" && room.lastWord?.stage==="results";
+    const funny=room.selectedGame==="funny_answers" && room.funny?.stage==="finished";
+    if(room.phase!=="playing" || (!lw&&!funny)) {
+      (callback as ActionCallback)({ok:false,error:"Finish the current match before replaying."}); return;
+    }
+    if(!inPlayerRange(room)) {
+      (callback as ActionCallback)({ok:false,error:"This game does not support the current room size."}); return;
+    }
+    if(lw) stopLastWord(room);
+    if(funny) { stopFunnyTimer(room.funny); room.funny=null; }
+    room.phase="instructions";
+    resetReady(room);
+    updateRoom(io,room);
+    (callback as ActionCallback)({ok:true});
   });
 
   socket.on("return_to_lobby", (callback) => {

@@ -11,10 +11,17 @@ type Props = {
 
 /** Room-wide, server-authoritative scores for the current (or last finished) game. */
 export function ScoreboardDialog({ room, currentPlayerId, dialogRef }: Props) {
-  const active = room.phase === "playing" && room.funny !== null;
+  const active = room.phase === "playing" && (room.funny !== null || room.lastWord !== null);
   const gameId = active ? room.selectedGame : room.lastScoreboard?.gameId ?? null;
-  const source = active ? room.funny?.scores : room.lastScoreboard?.scores;
-  const scores = [...(source ?? [])].sort((a, b) => b.points - a.points || a.name.localeCompare(b.name));
+  const source = active ? room.lastWord ? room.lastWord.participants.map(p=>({id:p.id,name:p.name,character:p.character,points:p.points})) : room.funny?.scores : room.lastScoreboard?.scores;
+  const scores = [...(source ?? [])].sort((a, b) => {
+    if (active && room.lastWord) {
+      const aPlacement=room.lastWord.participants.find(p=>p.id===a.id)?.placement??99;
+      const bPlacement=room.lastWord.participants.find(p=>p.id===b.id)?.placement??99;
+      return aPlacement-bPlacement || b.points-a.points || a.name.localeCompare(b.name);
+    }
+    return b.points-a.points || a.name.localeCompare(b.name);
+  });
   const title = gameId ? findGame(gameId)?.title ?? "Game" : "No game yet";
 
   return (

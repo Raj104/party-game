@@ -19,6 +19,7 @@ function setup() {
     if(id==='../config') return cfg.exports;
     if(id==='../games/funnyState') return {privateFunny:()=>null, publicFunny:()=>null, stopFunnyTimer:()=>{state.stops++}};
     if(id==='../games/funnyEngine') return {onFunnyHostDisconnected:()=>{}, onFunnyRosterChange:()=>{}};
+    if(id==='../games/lastWordEngine') return {stopLastWord:()=>{}, syncPause:()=>{}};
     if(id==='./roomCodes') return {generateFriendlyCode:()=> 'happy-otter'};
     return require(id);
   };

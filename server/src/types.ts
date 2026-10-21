@@ -9,6 +9,7 @@ export type Player = {
 };
 
 export type GameId =
+  | "last_word"
   | "funny_answers"
   | "drawing_telephone"
   | "meme_battle"
@@ -43,6 +44,26 @@ export type FunnyState = {
   timer?: ReturnType<typeof setTimeout>;
 };
 
+export type LastWordParticipant = {
+  id: string; name: string; character: CharacterId; hearts: number; points: number;
+  placement: number | null; validPasses: number; timeouts: number;
+  explosions: number; holdMs: number; longestWord: string; longestWordMs: number;
+  fastestWord: string; fastestWordMs: number; closestCallWord: string; closestCallRemainingMs: number;
+};
+export type LastWordAward = { key: string; playerId: string; stat: string };
+export type LastWordStage = "countdown" | "pop" | "handoff" | "turn" | "impact" | "rearrange" | "respawn" | "finalPoint" | "level" | "champion" | "awards" | "results";
+export type LastWordState = {
+  participants: LastWordParticipant[]; order: string[]; turnIndex: number; turnNumber: number;
+  stage: LastWordStage; stageStartedAt: number; stageDeadline: number | null;
+  turnDeadline: number | null; turnDurationMs: number;
+  prompt: string; rule: string; levelName: string; level: number; usedWords: string[]; promptHistory: string[]; validStreak: number;
+  pendingPlayerId: string | null; handoffFromPlayerId: string | null; impactPlayerId: string | null;
+  impact: "eliminated" | "explosion" | null;
+  awardIndex: number; awards: LastWordAward[]; winnerId: string | null;
+  paused: boolean; pausedRemaining: number;
+  timer?: ReturnType<typeof setTimeout>;
+};
+
 export type Room = {
   code: string;
   players: Player[];
@@ -53,6 +74,9 @@ export type Room = {
   selectedGame: GameId | null;
   selectedRounds: 3 | 5;
   funny: FunnyState | null;
+  lastWord: LastWordState | null;
+  gameReady: Record<string, boolean>;
+  lastWordReady: Record<string, boolean>;
   /** Snapshot of the last completed game, retained until the next game starts. */
   lastScoreboard: {
     gameId: GameId;

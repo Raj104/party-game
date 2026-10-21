@@ -78,7 +78,7 @@ export function usePartyRoom() {
     function onDisconnect() {
       if (!active) return;
       setConnected(false);
-      setRoom(null);
+      setRoom(previous => previous?.phase === "playing" && previous.lastWord ? previous : null);
       setFunnyPrivate(null);
       setBusy(false);
       setFunnyBusy(false);
@@ -223,6 +223,16 @@ export function usePartyRoom() {
     else socket.emit(event, onResponse);
   }
 
+  function runLastWordAction(event: string, payload?: unknown, done?: (response: ActionResponse) => void) {
+    if (!socket.connected) { done?.({ok:false,error:"Reconnecting…"});return; }
+    const callback=(response:ActionResponse)=>{
+      if(!response.ok && event!=="last_word_submit" && !done) setError(response.error);
+      done?.(response);
+    };
+    if(payload===undefined) socket.emit(event,callback);
+    else socket.emit(event,payload,callback);
+  }
+
   async function copyCode() {
     if (!room) return;
     await copyWithFallback(room.code, "room name");
@@ -265,6 +275,7 @@ export function usePartyRoom() {
     leaveRoom,
     runGameAction,
     runFunnyAction,
+    runLastWordAction,
     copyCode,
     copyInviteLink,
     openDisplay,

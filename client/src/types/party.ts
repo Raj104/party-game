@@ -9,6 +9,7 @@ export type Player = {
 };
 
 export type GameId =
+  | "last_word"
   | "funny_answers"
   | "drawing_telephone"
   | "meme_battle"
@@ -64,6 +65,20 @@ export type FunnyPrivate = {
   votedAnswerId: string | null;
 } | null;
 
+export type LastWordStage = "countdown" | "pop" | "handoff" | "turn" | "impact" | "rearrange" | "respawn" | "finalPoint" | "level" | "champion" | "awards" | "results";
+export type LastWordPlayer = {
+  id: string; name: string; character: CharacterId; hearts: number; points: number; placement: number | null;
+};
+export type LastWordPublic = {
+  participants: LastWordPlayer[]; order: string[]; stage: LastWordStage;
+  stageStartedAt: number; stageDeadline: number | null; turnDeadline: number | null; turnDurationMs: number;
+  turnNumber: number; activePlayerId: string | null; pendingPlayerId: string | null; handoffFromPlayerId: string | null;
+  prompt: string; rule: string; levelName: string; level: number;
+  impactPlayerId: string | null; impact: "eliminated" | "explosion" | null;
+  awardIndex: number; awards: {key:string;playerId:string;stat:string}[];
+  winnerId: string | null; paused: boolean; pausedRemaining: number;
+};
+
 export type Room = {
   code: string;
   players: Player[];
@@ -73,6 +88,9 @@ export type Room = {
   selectedRounds: 3 | 5;
   serverNow: number;
   funny: FunnyPublic | null;
+  lastWord: LastWordPublic | null;
+  gameReady: Record<string,boolean>;
+  lastWordReady: Record<string,boolean>;
   lastScoreboard: {
     gameId: GameId;
     scores: { id: string; name: string; character: CharacterId; points: number }[];

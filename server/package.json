@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test:funny": "node --test tests/funny-flow.test.cjs"
+    "test:funny": "node --test tests/funny-flow.test.cjs",
+    "test:last-word": "node --test tests/last-word.test.cjs"
   },
   "keywords": [],
   "author": "",

@@ -11,12 +11,28 @@ export const GAMES: GameInfo[] = [
     glyph: "✳",
     available: true,
     playerRange: "3–10 players",
-    description: "Answer personalized questions about your friends and vote for the funniest.",
+    description: "Friendships are tested. Laughs are guaranteed. The funniest answer wins.",
     instructions: [
       "Every round, you'll see a question inspired by someone in your party.",
       "Write a funny answer before time runs out. You can edit until submissions close.",
       "Read everyone's anonymous answers, then vote for your favorite. You can't vote for yourself.",
       "Each vote is worth one point. Whoever has the most points at the end wins.",
+    ],
+  },
+  {
+    id: "last_word",
+    title: "Last Word",
+    emoji: "",
+    glyph: "✹",
+    available: true,
+    playerRange: "3–6 players",
+    description: "Think fast. Spell faster. There's a bomb on your back.",
+    instructions: [
+      "Use the given prompt to make a 4+ letter English word.",
+      "Submit a valid word before your turn timer runs out to pass Bomb Buddy.",
+      "If the timer runs out, BOOM! Lose one full heart.",
+      "Lose all 3 hearts and you're out.",
+      "Earn the highest total score, including bonus points, to become champion.",
     ],
   },
   {
@@ -98,4 +114,20 @@ export const GAMES: GameInfo[] = [
 
 export function findGame(gameId: GameId | null): GameInfo | undefined {
   return GAMES.find(game => game.id === gameId);
+}
+
+// Reusable eight-color cycle for current and future game cards.
+export const GAME_ACCENTS = [
+  "#d48c7c", // coral
+  "#b7a2d3", // lilac
+  "#a8cfa7", // sage
+  "#e0bd65", // mustard
+  "#97bbd3", // sky
+  "#d9a2bf", // rose
+  "#dba580", // peach
+  "#91c9c0", // teal
+] as const;
+export function gameAccent(gameId: GameId): string {
+  const index = GAMES.findIndex(game => game.id === gameId);
+  return GAME_ACCENTS[(index < 0 ? 0 : index) % GAME_ACCENTS.length];
 }

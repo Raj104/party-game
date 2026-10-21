@@ -1,0 +1,271 @@
+/* Last Word keeps all existing FFF character SVG assets untouched. */
+.lw-screen {--lw-cream:var(--fff-paper);--lw-charcoal:var(--fff-ink);--lw-muted:var(--fff-quiet);--lw-panel:var(--fff-muted-paper);--lw-edge:var(--fff-border);--lw-mustard:var(--fff-accent);--lw-coral:var(--fff-coral);--lw-sage:var(--fff-green);--lw-lilac:var(--fff-lilac);position:relative;color:var(--lw-charcoal);background:var(--lw-cream);border:2px solid var(--lw-edge);border-radius:14px;padding:clamp(12px,3vw,25px);box-shadow:5px 6px 0 var(--fff-shadow);max-width:100%;isolation:isolate;}
+.lw-screen h1,.lw-screen h2 {color:var(--lw-charcoal);margin:0;line-height:1.16}
+.lw-screen p,.lw-screen small {color:var(--lw-muted)}
+.lw-kicker{font-size:.73rem;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--lw-muted);}
+.lw-titleband h2 {font-size:2.2rem;margin:.25rem 0}.lw-titleband p{margin:.3rem 0}
+.lw-rules{display:flex;gap:12px;align-items:center;margin:15px 0;border-radius:16px;padding:12px;background:var(--lw-panel);border:1.5px solid var(--lw-edge)}
+.lw-rules ol{margin:0;padding-left:20px;line-height:1.6;font-size:.85rem}.lw-rules li{margin-bottom:4px}
+.lw-buddy{font-size:3rem}
+.lw-note{font-size:.82rem;line-height:1.4}.lw-warning{font-weight:700;color:#a84539!important;padding:9px;border-radius:8px;background:#fbe7e1}
+.lw-go,.lw-skip{font-size:1rem;font-weight:900;border:2px solid var(--lw-edge);border-radius:12px;cursor:pointer;padding:12px 14px;min-width:0;box-shadow:2px 3px 0 var(--fff-shadow)}.lw-go{background:var(--lw-mustard);color:#202126}.lw-skip{background:var(--lw-panel);color:var(--lw-charcoal)}.lw-go:disabled,.lw-skip:disabled{background:#ded9d1;color:#868078;cursor:not-allowed;box-shadow:none}
+.lw-game-heading{display:flex;justify-content:space-between;align-items:center;gap:10px}.lw-game-heading h2{font-size:1.35rem;margin-top:3px}.lw-game-heading .lw-kicker{margin:0}
+.lw-table{width:100%;height:clamp(280px,75vw,480px);max-height:56vh;position:relative;overflow:visible;margin:20px 0 15px}.lw-table-surface{border:2px dashed #b9ac9f;border-radius:50%;width:62%;height:62%;position:absolute;top:19%;left:19%;display:grid;place-items:center;background:radial-gradient(ellipse,var(--lw-cream),var(--lw-panel))}.lw-center{display:flex;align-items:center;flex-direction:column;justify-content:center;width:92%;gap:2px;text-align:center}.lw-center small{font-size:clamp(.6rem,1.7vw,.82rem);max-width:100%;font-weight:700}.lw-letters{font-size:clamp(1.4rem,4.7vw,2.9rem);letter-spacing:.18em;line-height:1.1;color:var(--lw-charcoal)}
+.lw-seat{--seat-x:50%;--seat-y:50%;position:absolute;left:var(--seat-x);top:var(--seat-y);transform:translate(-50%,-50%);display:flex;align-items:center;flex-direction:column;gap:1px;text-align:center;min-width:66px;max-width:29%;transition:left .55s ease,top .55s ease,opacity .3s ease;z-index:2}.lw-seat strong{font-size:clamp(.65rem,2vw,.95rem);background:var(--lw-cream);padding:1px 5px;border-radius:6px;max-width:100%;text-overflow:ellipsis;white-space:nowrap;overflow:hidden}.lw-seat-token{position:relative;display:grid;place-items:center;border-radius:50%;padding:4px}.lw-seat--active .lw-seat-token{background:#e7a63744;box-shadow:0 0 0 3px var(--lw-mustard)}.lw-seat--offline{opacity:.52}.lw-seat-bomb{position:absolute;right:-4px;top:-4px;font-size:1.5rem;color:#ef9177;font-weight:900}.lw-status-dot{position:absolute;right:2px;bottom:18px;width:9px;height:9px;background:#e7a637;border-radius:50%;border:1px solid #202126}.lw-seat--impact .lw-seat-token{animation:lw-shatter .85s ease-in both}.lw-table--pop .lw-seat{animation:lw-pop .55s cubic-bezier(.23,1.8,.33,1) both}.lw-table--handoff .lw-seat--active .lw-seat-token{animation:lw-hop .65s ease both}.lw-hearts{display:inline-flex;gap:1px;align-items:center}.lw-heart{width:clamp(12px,2.5vw,20px);height:auto;display:block}.lw-seat-ring{position:absolute;inset:-5px;border-radius:50%;border:3px solid #e7a637;pointer-events:none}
+.lw-bomb{display:inline-block;width:clamp(48px,12vw,76px);height:auto;color:#7dbfd8;animation:lw-bob 1.2s ease-in-out infinite}.lw-bomb svg{width:100%;display:block;overflow:visible}.lw-bomb--nervous{color:#f0c24d;animation-duration:.65s}.lw-bomb--angry{color:#ef806c;animation:lw-bomb-panic .18s ease-in-out infinite alternate}
+.lw-clock{width:65px;height:65px;display:grid;place-items:center;flex-shrink:0;border-radius:50%;background:conic-gradient(#acd1aa var(--clock-fill),#ded6cc 0);position:relative;border:2px solid #202126}.lw-clock:before{content:"";position:absolute;inset:6px;border-radius:50%;background:var(--lw-cream)}.lw-clock span{position:relative;font-weight:900;font-size:1.6rem}.lw-clock--warning{background:conic-gradient(#e7a637 var(--clock-fill),#ded6cc 0)}.lw-clock--danger{background:conic-gradient(#ef9177 var(--clock-fill),#ded6cc 0);animation:lw-pulse .7s ease-in-out infinite}
+.lw-small-strip{display:none}.lw-strip{display:flex;gap:9px;align-items:center;justify-content:space-between;font-size:.73rem;background:var(--lw-panel);border:1px solid var(--lw-edge);border-radius:10px;padding:8px}.lw-strip>*{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lw-strip span{color:var(--lw-muted)}
+.lw-entry{background:var(--lw-cream);border:2px solid var(--lw-edge);border-radius:16px;padding:15px;display:grid;gap:6px}.lw-prompt{font-weight:900;font-size:clamp(2rem,8vw,3rem);letter-spacing:.19em;line-height:1.1}.lw-entry>p{margin:0 0 4px;font-size:.9rem}.lw-entry form{display:grid;gap:8px}.lw-entry label{color:var(--lw-charcoal);font-size:.86rem}.lw-entry input{background:var(--lw-panel);color:var(--lw-charcoal);border:2px solid var(--lw-edge);border-radius:10px;padding:12px;font-size:16px;width:100%;min-width:0;box-sizing:border-box}.lw-entry input:focus{outline:3px solid #e7a63766;border-color:#a27337}.lw-entry input.lw-input-error{border-color:#bb5946;background:#fbe7e1}.lw-validation-error{color:#a84539;font-size:.81rem;font-weight:750}.lw-checking{color:#89612e;font-size:.81rem;font-weight:700}.lw-actions{display:flex;gap:10px}.lw-actions>button{flex:1}.lw-entry-hearts{align-self:center}.lw-entry-hearts .lw-heart{width:20px}
+.lw-next-up,.lw-connection,.lw-level-flash,.lw-boom,.lw-pause{border-radius:12px;text-align:center;font-weight:900;padding:10px;margin-bottom:10px}.lw-next-up{background:#e7a637;color:#202126}.lw-connection{background:#f7ddb1;color:#704b16}.lw-level-flash{background:#b7a2d3;color:#202126;animation:lw-pop .4s ease}.lw-boom{background:#ef9177;color:#202126;font-size:2.2rem;letter-spacing:.2em;animation:lw-pulse .25s ease 3}.lw-pause{background:var(--lw-panel);box-shadow:0 0 0 2px #d6a66a}.lw-watch{text-align:center}.lw-watch span{font-weight:800}.lw-player-strip{font-size:.77rem;color:#75675d;margin-top:3px}
+.lw-countdown,.lw-winner,.lw-award,.lw-results{text-align:center;min-height:350px;display:flex;flex-direction:column;gap:10px;align-items:center;justify-content:center}.lw-countdown h1{font-size:8rem;color:var(--lw-charcoal);line-height:1;margin:25px 0;text-shadow:5px 6px var(--lw-mustard);animation:lw-pop .5s ease}.lw-winner{background:radial-gradient(ellipse at center,color-mix(in srgb,var(--lw-mustard) 18%,var(--lw-cream)) 0%,var(--lw-cream) 75%)}.lw-winner-token .character-token,.lw-award-token .character-token{transform:scale(1.55);margin:20px}.lw-winner h1{font-size:2.2rem}.lw-crown{font-size:3.5rem;color:#e7a637}.lw-award h1{font-size:1.7rem}.lw-award strong{font-size:1.5rem;color:#9e742c}.lw-standings{width:100%;padding:0;list-style:none;margin:10px 0}.lw-standings li{display:flex;gap:8px;align-items:center;border:1px solid #c3b6a3;border-radius:10px;background:var(--lw-panel);margin:5px 0;padding:7px 10px}.lw-standing-character{width:34px}.lw-standings strong{flex:1;text-align:left}.lw-results .lw-actions{width:100%;flex-direction:column}.lw-winner-inline{display:flex;gap:14px;align-items:center;font-size:1.35rem}
+@keyframes lw-pop{0%{transform:scale(.4);opacity:0}75%{transform:scale(1.13);opacity:1}100%{transform:scale(1);opacity:1}}@keyframes lw-bob{50%{transform:translateY(-4px) rotate(3deg)}}@keyframes lw-bomb-panic{to{transform:rotate(7deg) translateX(2px)}}@keyframes lw-pulse{50%{transform:scale(1.045)}}@keyframes lw-hop{35%{transform:translateY(-15px) scale(.9,1.1)}70%{transform:translateY(2px) scale(1.05,.92)}100%{transform:none}}@keyframes lw-shatter{40%{transform:scale(1.25) rotate(9deg);filter:grayscale(.4)}100%{transform:scale(.5) rotate(-18deg);opacity:.15}}
+@media(max-width:480px){.lw-screen{padding:12px}.lw-table{height:310px;margin:14px 0}.lw-table-surface{width:60%;height:56%;left:20%;top:22%}.lw-seat{min-width:58px}.lw-seat .character-token--large{transform:scale(.8)}.lw-seat strong{font-size:.65rem}.lw-entry{padding:11px}.lw-entry form{gap:6px}.lw-clock{width:56px;height:56px}}
+@media(max-height:740px) and (max-width:650px){.lw-my-turn.lw-editing .lw-big-table{display:none}.lw-my-turn.lw-editing .lw-small-strip{display:block}.lw-my-turn.lw-editing .lw-entry{padding:7px 10px;gap:2px}.lw-my-turn.lw-editing .lw-entry input{padding:9px}.lw-my-turn.lw-editing .lw-prompt{font-size:1.8rem}.lw-my-turn.lw-editing .lw-entry .lw-actions button{padding:8px}.lw-my-turn.lw-editing .lw-game-heading{margin-bottom:3px}}
+/* Compact typing layout on all mobile screens whenever the keyboard is focused. */
+@media(max-width:650px){.lw-my-turn.lw-editing .lw-big-table{display:none}.lw-my-turn.lw-editing .lw-small-strip{display:block}.lw-my-turn.lw-editing .lw-entry{padding:9px 11px;gap:2px}.lw-my-turn.lw-editing .lw-entry input{padding:10px}.lw-my-turn.lw-editing .lw-prompt{font-size:2rem}.lw-my-turn.lw-editing .lw-entry .lw-actions button{padding:9px}.lw-my-turn.lw-editing .lw-game-heading{margin-bottom:3px}}
+/* Preserve original character SVG shapes while splitting their wrappers on elimination. */
+.lw-token-split{position:relative;display:block;width:56px;height:56px}.lw-split-half{position:absolute;inset:0;display:block}.lw-split-half>.character-token{width:100%;height:100%}.lw-split-left{clip-path:polygon(0 0,54% 0,45% 22%,57% 44%,44% 68%,53% 100%,0 100%);animation:lw-split-left 2.1s ease both}.lw-split-right{clip-path:polygon(54% 0,100% 0,100% 100%,53% 100%,44% 68%,57% 44%,45% 22%);animation:lw-split-right 2.1s ease both}.lw-smoke{position:absolute;left:24%;top:18%;width:55%;height:58%;background:radial-gradient(circle,#ccc9c8 0%,#c4c0c0aa 40%,transparent 74%);animation:lw-smoke 2.1s ease both;pointer-events:none}.lw-seat--impact .lw-seat-token:has(.lw-token-split){animation:none}
+@keyframes lw-split-left{0%,15%{transform:none;opacity:1}45%{transform:translate(-9px,-6px) rotate(-13deg);opacity:1}100%{transform:translate(-25px,15px) rotate(-33deg);opacity:0}}@keyframes lw-split-right{0%,15%{transform:none;opacity:1}45%{transform:translate(9px,-5px) rotate(14deg);opacity:1}100%{transform:translate(24px,19px) rotate(32deg);opacity:0}}@keyframes lw-smoke{0%,15%{opacity:0;transform:scale(.3)}45%{opacity:.9;transform:scale(1.1)}100%{opacity:0;transform:scale(2.5) translateY(-16px)}}
+.lw-seat--scribble{--lw-spot:#f4a97b}.lw-seat--bolt{--lw-spot:#d5bd72}.lw-seat--odd-one{--lw-spot:#b6a2d1}.lw-seat--stripe{--lw-spot:#aacaa9}.lw-seat--orbit{--lw-spot:#a7bcca}.lw-seat--blob{--lw-spot:#db9cb2}.lw-seat--active .lw-seat-token{background:color-mix(in srgb,var(--lw-spot) 45%,transparent);box-shadow:0 0 0 3px var(--lw-spot)}
+.lw-bomb-flight{position:absolute;z-index:7;left:var(--fly-from-x);top:var(--fly-from-y);display:block;pointer-events:none;animation:lw-bomb-flight .65s cubic-bezier(.25,.8,.3,1) forwards;transform:translate(-50%,-50%)}.lw-bomb-flight .lw-bomb{width:38px;animation:lw-hop .65s ease both}
+@keyframes lw-bomb-flight{0%{left:var(--fly-from-x);top:var(--fly-from-y)}45%{top:calc(var(--fly-from-y) - 8%)}100%{left:var(--fly-to-x);top:var(--fly-to-y)}}
+.lw-seat-ring{border:0;background:conic-gradient(var(--lw-spot) var(--clock-fill),#ddd3c8 0);inset:-6px;z-index:-1}.lw-seat-ring:after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--lw-cream)}
+.lw-survival-point{position:absolute;top:-23px;right:-6px;background:#acd1aa;border:1px solid #202126;border-radius:8px;font-weight:900;font-size:.8rem;padding:1px 5px;animation:lw-points .8s ease both}
+@keyframes lw-points{from{opacity:0;transform:translateY(9px) scale(.8)}70%{opacity:1}to{transform:translateY(-7px);opacity:0}}
+.lw-seat--impact:not(:has(.lw-token-split)) .lw-seat-token{animation:lw-dizzy 1.1s ease-in-out}
+@keyframes lw-dizzy{0%,100%{transform:rotate(0)}18%,50%{transform:rotate(-12deg)}35%,70%{transform:rotate(12deg)}}
+.lw-table--impact .lw-bomb{opacity:.15;filter:grayscale(1)}
+.tv-screen--playing .tv-content--game>.lw-screen{width:100%;min-height:0;flex:1;overflow:hidden;display:flex;flex-direction:column;justify-content:center;align-items:stretch}
+.tv-screen--playing .lw-game-heading{flex:0 0 auto}.tv-screen--playing .lw-table{width:min(82vw,1000px);height:min(66vh,680px);max-height:calc(100dvh - 230px);margin:0 auto;flex:1 1 auto;min-height:270px}
+.tv-screen--playing .lw-seat .character-token--large{width:clamp(55px,5.8vw,95px);height:clamp(55px,5.8vw,95px)}.tv-screen--playing .lw-seat strong{font-size:clamp(.9rem,1.4vw,1.5rem)}.tv-screen--playing .lw-heart{width:clamp(16px,1.8vw,28px)}
+.tv-screen--playing .lw-letters{font-size:clamp(2rem,4.2vw,5rem)}.tv-screen--playing .lw-center small{font-size:clamp(.85rem,1.2vw,1.5rem)}
+.tv-screen--playing .lw-results .lw-standings{max-width:750px;margin:0 auto}.tv-screen--playing .lw-results .lw-standings li{padding:4px 16px}
+
+/* Explicit readable feedback colors over warm error backgrounds in either theme. */
+.lw-entry input.lw-input-error{color:#202126}
+.lw-validation-error{color:var(--fff-ink)}
+.lw-clock{border-color:var(--lw-edge)}
+.lw-seat-ring{background:conic-gradient(var(--lw-spot) var(--clock-fill),var(--lw-panel) 0)}
+.lw-seat-ring:after{background:var(--lw-cream)}
+
+/* v5.0.1: Point-based celebration, typographic champions, no crown/emojis. */
+.lw-seat-bomb{width:24px;height:25px;right:-9px;top:-8px;display:grid;place-items:center}
+.lw-seat-bomb .lw-bomb{width:24px;height:25px;animation:none}
+.lw-standings .lw-standing-rank{width:1.3rem;text-align:center;color:var(--lw-muted);font-size:.84rem;font-weight:800}
+.lw-standings .lw-standing--champion{border:2px solid var(--lw-mustard);background:color-mix(in srgb,var(--lw-mustard) 13%,var(--lw-panel))}
+.lw-standings .lw-standing-label{font-size:.61rem;letter-spacing:.06em;display:inline-block;margin-left:8px;padding:3px 6px;border-radius:4px;background:var(--lw-mustard);color:#202126;vertical-align:middle}
+.lw-standings .lw-points{font-variant-numeric:tabular-nums;font-weight:850;white-space:nowrap}
+.lw-winner-inline{justify-content:center;flex-wrap:wrap}
+.lw-champion-score{font-size:.9rem;border:1px solid var(--lw-edge);padding:5px 10px;border-radius:20px;color:var(--lw-charcoal);background:var(--lw-panel)}
+.lw-winner,.lw-award{min-height:410px;padding-block:clamp(26px,6vw,70px);overflow:hidden;isolation:isolate}
+.lw-winner{background:radial-gradient(ellipse at 50% 42%,color-mix(in srgb,var(--lw-mustard) 27%,var(--lw-cream)) 0%,var(--lw-cream) 69%)}
+.lw-award{background:radial-gradient(ellipse at 50% 38%,color-mix(in srgb,var(--lw-lilac) 25%,var(--lw-cream)) 0%,var(--lw-cream) 75%)}
+.lw-ceremony-kicker{font-size:.8rem;font-weight:900;letter-spacing:.18em;color:var(--lw-muted);animation:lw-ceremony-reveal .6s both}
+.lw-winner-title{font-size:clamp(1.45rem,5vw,2.7rem);font-weight:950;letter-spacing:.025em;color:var(--lw-charcoal);animation:lw-ceremony-reveal 1s .5s both}
+.lw-winner-token,.lw-award-token{position:relative;z-index:1;animation:lw-ceremony-token 1.3s .75s both;filter:drop-shadow(0 11px 15px color-mix(in srgb,var(--lw-mustard) 30%,transparent))}
+.lw-winner-token::before,.lw-award-token::before{content:"";position:absolute;inset:-16px;z-index:-1;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--lw-mustard) 33%,transparent),transparent 72%);animation:lw-ceremony-glow 2.4s ease-in-out infinite alternate}
+.lw-award-token::before{background:radial-gradient(circle,color-mix(in srgb,var(--lw-lilac) 50%,transparent),transparent 73%)}
+.lw-winner h1{font-size:clamp(2.2rem,6vw,4rem);animation:lw-ceremony-reveal .85s 1.35s both}
+.lw-winner-score{font-size:1.3rem!important;font-weight:900;color:var(--lw-charcoal)!important;animation:lw-ceremony-reveal 1s 1.8s both}
+.lw-award h1{font-size:clamp(1.5rem,4vw,2.5rem);animation:lw-ceremony-reveal .75s .35s both}
+.lw-award h2{font-size:clamp(1.5rem,4vw,2.3rem);animation:lw-ceremony-reveal .7s 1.2s both}
+.lw-award-stat{color:var(--lw-charcoal)!important;font-weight:700;animation:lw-ceremony-reveal .7s 1.5s both}
+.lw-award-points{background:var(--lw-mustard);color:#202126!important;border:2px solid #202126;border-radius:12px;padding:8px 20px;font-size:1.3rem!important;box-shadow:3px 4px 0 var(--fff-shadow);animation:lw-ceremony-points .65s 2s both}
+.lw-ceremony-timer{width:min(320px,80%);height:5px;border-radius:20px;background:var(--lw-panel);overflow:hidden;border:1px solid var(--lw-edge);margin:18px auto 4px}
+.lw-ceremony-timer span{display:block;height:100%;width:100%;background:var(--lw-mustard);transform-origin:left center;animation:lw-ceremony-progress linear both}
+.lw-ceremony-timer--award span{animation-duration:4.8s}
+.lw-ceremony-timer--champion span{animation-duration:6.5s}
+.lw-skip-ceremony{position:relative;z-index:2;margin-top:6px}
+.lw-ceremony-stars{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.lw-ceremony-stars i{position:absolute;display:block;width:11px;height:11px;background:var(--lw-mustard);transform:rotate(45deg);border-radius:2px;animation:lw-ceremony-float 3.2s ease-in-out infinite alternate;opacity:.55}
+.lw-ceremony-stars i:nth-child(1){top:18%;left:12%;animation-delay:-.3s}.lw-ceremony-stars i:nth-child(2){top:27%;right:18%;background:var(--lw-lilac);animation-delay:-1s}.lw-ceremony-stars i:nth-child(3){top:57%;left:8%;background:var(--lw-coral);animation-delay:-.7s}.lw-ceremony-stars i:nth-child(4){top:67%;right:9%;background:var(--lw-sage);animation-delay:-1.7s}.lw-ceremony-stars i:nth-child(5){top:9%;left:47%;width:7px;height:7px;animation-delay:-2s}.lw-ceremony-stars i:nth-child(6){top:85%;right:32%;width:7px;height:7px;background:var(--lw-lilac);animation-delay:-1.25s}
+@keyframes lw-ceremony-reveal{from{opacity:0;transform:translateY(19px)}to{opacity:1;transform:translateY(0)}}
+@keyframes lw-ceremony-token{0%{opacity:0;transform:translateY(32px) scale(.6) rotate(-12deg)}72%{opacity:1;transform:translateY(-5px) scale(1.12) rotate(3deg)}100%{opacity:1;transform:none}}
+@keyframes lw-ceremony-points{0%{opacity:0;transform:scale(.4) rotate(-7deg)}75%{transform:scale(1.13) rotate(2deg)}100%{opacity:1;transform:none}}
+@keyframes lw-ceremony-glow{from{opacity:.55;transform:scale(.88)}to{opacity:1;transform:scale(1.2)}}
+@keyframes lw-ceremony-float{from{transform:translateY(-12px) rotate(20deg);opacity:.24}to{transform:translateY(12px) rotate(85deg);opacity:.75}}
+@keyframes lw-ceremony-progress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+
+/* v5.0.2: Bomb Buddy stays visibly docked to the active player's original token. */
+.lw-seat-bomb{width:clamp(37px,6vw,48px);height:clamp(37px,6vw,48px);top:-18px;right:-23px;left:auto;z-index:6;display:grid;place-items:center;pointer-events:none;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.25))}
+.lw-seat--bomb-left .lw-seat-bomb{right:auto;left:-23px}
+.lw-seat-bomb .lw-bomb{width:100%;height:auto;animation:lw-bob 1.2s ease-in-out infinite}
+.lw-seat-bomb .lw-bomb--nervous{animation-duration:.65s}
+.lw-seat-bomb .lw-bomb--angry{animation:lw-bomb-panic .18s ease-in-out infinite alternate}
+.lw-entry .lw-actions>.lw-go{width:100%;flex:1}
+@media(max-width:480px){.lw-seat-bomb{width:39px;height:39px;top:-17px;right:-19px}.lw-seat--bomb-left .lw-seat-bomb{left:-19px}}
+
+.funny-finish-actions{display:flex;flex-wrap:wrap;gap:12px}.funny-finish-actions button{flex:1;min-width:155px}
+
+/* v5.0.3: Bomb Buddy has its own color, never inherited charcoal in dark mode. */
+.lw-bomb--calm{--bomb-buddy-accent:#7dbfd8}
+.lw-bomb--nervous{--bomb-buddy-accent:#efc35d}
+.lw-bomb--angry{--bomb-buddy-accent:#ef9177}
+/* Explosion happens precisely on the current token; incoming bomb is distinct. */
+.lw-impact-burst{position:absolute;inset:-32px;z-index:8;display:grid;place-items:center;pointer-events:none;isolation:isolate}
+.lw-impact-burst:before{content:"";position:absolute;inset:0;z-index:-1;background:#ef9177;clip-path:polygon(50% 0,62% 25%,85% 10%,78% 37%,100% 50%,76% 63%,90% 90%,62% 75%,50% 100%,37% 75%,10% 90%,24% 62%,0 50%,24% 37%,10% 10%,38% 25%);animation:lw-boom-burst .92s ease-out both}
+.lw-impact-burst strong{position:relative;z-index:2;background:none!important;color:#202126!important;font-size:clamp(1rem,3vw,1.9rem)!important;letter-spacing:.04em;animation:lw-boom-label 1s ease-in-out both;overflow:visible}
+.lw-impact-cloud{position:absolute;inset:20%;border-radius:50%;background:radial-gradient(circle,#ccc8c6cc,#bbb6b4aa 40%,transparent 72%);animation:lw-boom-smoke 1.45s ease-out both;z-index:1}
+.lw-table--impact .lw-seat--impact .lw-seat-token{overflow:visible}
+.lw-bomb-respawn{display:grid;place-items:center;pointer-events:none;animation:lw-respawn .7s cubic-bezier(.2,1.5,.4,1) both}
+.lw-bomb-respawn .lw-bomb{width:clamp(42px,8vw,67px)}
+.lw-table--respawn .lw-center>small{font-size:.7rem;letter-spacing:.08em}
+.lw-table--handoff .lw-bomb-flight{animation-timing-function:cubic-bezier(.3,.8,.25,1)}
+@keyframes lw-boom-burst{0%{transform:scale(.15);opacity:0}20%{transform:scale(1.3);opacity:1}70%{transform:scale(1.15);opacity:1}100%{transform:scale(.08);opacity:0}}
+@keyframes lw-boom-label{0%{transform:scale(.15);opacity:0}22%{transform:scale(1.2);opacity:1}63%{transform:scale(1);opacity:1}100%{transform:scale(.2);opacity:0}}
+@keyframes lw-boom-smoke{0%,35%{transform:scale(.2);opacity:0}60%{transform:scale(1.1);opacity:.8}100%{transform:scale(2.3) translateY(-10px);opacity:0}}
+@keyframes lw-respawn{0%{transform:scale(.15) rotate(-25deg);opacity:0}70%{transform:scale(1.2) rotate(6deg);opacity:1}100%{transform:none;opacity:1}}
+
+/* v5.0.4: follow the outer, clockwise edge of the player ring instead of
+   a diagonal center-crossing hop. 12 short segments make the arc smooth
+   at 2–6 players and on every responsive roundtable size. */
+.lw-table--handoff .lw-bomb-flight{
+  animation:lw-bomb-perimeter-flight .65s linear both;
+}
+@keyframes lw-bomb-perimeter-flight{
+  0.0000%{left:var(--fly-x0);top:var(--fly-y0);}
+  8.3333%{left:var(--fly-x1);top:var(--fly-y1);}
+  16.6667%{left:var(--fly-x2);top:var(--fly-y2);}
+  25.0000%{left:var(--fly-x3);top:var(--fly-y3);}
+  33.3333%{left:var(--fly-x4);top:var(--fly-y4);}
+  41.6667%{left:var(--fly-x5);top:var(--fly-y5);}
+  50.0000%{left:var(--fly-x6);top:var(--fly-y6);}
+  58.3333%{left:var(--fly-x7);top:var(--fly-y7);}
+  66.6667%{left:var(--fly-x8);top:var(--fly-y8);}
+  75.0000%{left:var(--fly-x9);top:var(--fly-y9);}
+  83.3333%{left:var(--fly-x10);top:var(--fly-y10);}
+  91.6667%{left:var(--fly-x11);top:var(--fly-y11);}
+  100.0000%{left:var(--fly-x12);top:var(--fly-y12);}
+}
+
+/* v5.0.5 — Theme-paired, compact roundtable with flat circular player tokens.
+   Scope everything to Last Word; the original character SVGs and the other
+   games retain their own styling. Seat and flight coordinates stay unchanged. */
+.lw-screen {
+  --lw-timer-track: #d6d0c5;
+  --lw-timer-calm: #e3a32d;
+  --lw-timer-warning: #dc8e34;
+  --lw-timer-danger: #e66f5b;
+}
+:root[data-theme="dark"] .lw-screen {
+  --lw-timer-track: #77716b;
+  --lw-timer-calm: #efbc65;
+  --lw-timer-warning: #f1ad54;
+  --lw-timer-danger: #f09b82;
+}
+
+/* A shorter, rounder table in the same coordinate system as Bomb Buddy's
+   clockwise path; this also keeps the active ring legible on a TV. */
+.lw-table {
+  width: min(100%, 840px);
+  height: clamp(335px, 55vw, 530px);
+  max-height: min(65vh, 530px);
+  margin: 20px auto 15px;
+}
+.lw-table-surface {
+  left: 15%; top: 18%; width: 70%; height: 64%;
+  background: radial-gradient(ellipse at center, var(--lw-cream), var(--lw-panel));
+}
+.tv-screen--playing .lw-table {
+  width: min(72vw, 840px);
+  height: min(64vh, 530px);
+  max-height: calc(100dvh - 230px);
+}
+
+/* Only Last Word gameplay and ceremony tokens become flat circles; shared
+   FFF token artwork and player icons in other games are unaffected. */
+.lw-seat-token > .character-token,
+.lw-award-token > .character-token,
+.lw-winner-token > .character-token,
+.lw-winner-inline > .character-token {
+  border-radius: 50%;
+  background-image: none;
+  box-shadow: none;
+  filter: none;
+}
+.lw-seat-token { background: transparent; box-shadow: none; isolation: isolate; }
+.lw-seat--active .lw-seat-token {
+  background: transparent;
+  box-shadow: none;
+}
+.lw-seat-token > .character-token { position: relative; z-index: 2; }
+
+/* True progress ring with a visible paper-colored *gap* between the ring and
+   the token; no translucent spotlight or glowing outline. */
+.lw-seat-ring {
+  position: absolute;
+  inset: -12px;
+  z-index: 0;
+  border: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--lw-timer-calm) var(--clock-fill), var(--lw-timer-track) 0);
+  pointer-events: none;
+}
+.lw-seat-ring::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: var(--lw-cream);
+}
+.lw-seat-ring--warning { background: conic-gradient(var(--lw-timer-warning) var(--clock-fill), var(--lw-timer-track) 0); }
+.lw-seat-ring--danger { background: conic-gradient(var(--lw-timer-danger) var(--clock-fill), var(--lw-timer-track) 0); }
+
+/* Keep the timer stationary while the *character* gently bobs and tilts. */
+.lw-table--turn .lw-seat--active .lw-seat-token > .character-token {
+  animation: lw-token-alive 1.8s ease-in-out infinite;
+  transform-origin: 50% 75%;
+}
+@keyframes lw-token-alive {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  28% { transform: translateY(-3px) rotate(-2.5deg); }
+  60% { transform: translateY(1px) rotate(2deg); }
+}
+
+/* Stage presentation remains celebratory on BOTH themes, with a diffuse
+   background spotlight rather than a halo glued to the character. */
+:root[data-theme="light"] .lw-award {
+  background:
+    radial-gradient(ellipse 56% 33% at 50% 50%, rgba(183,162,211,.32), transparent 98%),
+    linear-gradient(180deg, #fffaf2 0%, #f0ebe5 100%);
+}
+:root[data-theme="dark"] .lw-award {
+  background:
+    radial-gradient(ellipse 56% 35% at 50% 50%, rgba(183,162,211,.27), transparent 98%),
+    linear-gradient(180deg, #30313a 0%, #202228 100%);
+}
+.lw-award::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 22%; top: -15%; width: 56%; height: 73%;
+  clip-path: polygon(34% 0,66% 0,100% 100%,0 100%);
+  background: linear-gradient(180deg, color-mix(in srgb,var(--lw-lilac) 19%,transparent), transparent);
+  pointer-events: none;
+}
+.lw-award-token, .lw-winner-token { filter: none; }
+.lw-award-token::before, .lw-winner-token::before { content: none; animation: none; }
+.lw-award-token > .character-token,
+.lw-winner-token > .character-token {
+  animation: lw-ceremony-token-alive 2.7s ease-in-out infinite;
+  transform-origin: 50% 75%;
+}
+@keyframes lw-ceremony-token-alive {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg) scale(1.55); }
+  50% { transform: translateY(-5px) rotate(2deg) scale(1.55); }
+}
+
+@media (max-width: 480px) {
+  .lw-table { width: 100%; height: 310px; max-height: none; margin: 14px auto; }
+  .lw-table-surface { width: 66%; height: 60%; top: 20%; left: 17%; }
+  /* Scaling only the character would make the ring too far from its surface. */
+  .lw-seat .character-token--large { transform: none; }
+  .lw-table--turn .lw-seat--active .lw-seat-token > .character-token {
+    animation: lw-token-alive 1.8s ease-in-out infinite;
+  }
+  .lw-seat-ring { inset: -10px; }
+  .lw-seat-ring::after { inset: 4px; }
+}
+
+/* v5.0.8: A single playful caption accompanies each of the three bonus awards. */
+.lw-award-caption { position: relative; z-index: 1; color: var(--lw-charcoal); font-size: clamp(.95rem, 2.2vw, 1.18rem); font-weight: 600; line-height: 1.35; text-align: center; margin: .1rem 0 .35rem; animation: lw-ceremony-reveal .7s 1.4s both; }

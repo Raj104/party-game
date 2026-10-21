@@ -1,18 +1,25 @@
 import { GamePhasePanel } from "../components/GamePhasePanel";
 import { PlayerList } from "../components/PlayerList";
 import { ScoreboardDialog } from "../components/ScoreboardDialog";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { LastWordGame } from "../games/LastWord/LastWordGame";
+import { LastWordSetup } from "../games/LastWord/LastWordSetup";
 import { FunnyGame } from "../games/FunnyAnswers/FunnyGame";
+import { FunnyReady } from "../games/FunnyAnswers/FunnyReady";
 import type { PartyRoomController } from "../hooks/usePartyRoom";
 import type { Player } from "../types/party";
+import { AUDIO_ENABLED } from "../lib/audio";
 
 type Props = { party: PartyRoomController & { room: NonNullable<PartyRoomController["room"]> } };
 
 export function RoomScreen({ party }: Props) {
   const { room, connected, gameActionBusy, isHost, copyCode, copyInviteLink, openDisplay, copyDisplayLink, leaveRoom, runGameAction } = party;
   const playing = room.phase === "playing";
+  const inGameReady = room.phase === "instructions";
   const scoreboardRef = useRef<HTMLDialogElement>(null);
   const settingsRef = useRef<HTMLDetailsElement>(null);
+  const [soundOn,setSoundOn]=useState(()=>{try{return localStorage.getItem("fff-sound")!=="off";}catch{return false;}});
+  function toggleSound(){setSoundOn(previous=>{const next=!previous;try{localStorage.setItem("fff-sound",next?"on":"off");}catch{/* Private browsing */}return next;});}
 
   useEffect(() => {
     function closeOnOutsidePointer(event: PointerEvent) {
@@ -68,12 +75,13 @@ export function RoomScreen({ party }: Props) {
                 <button type="button" className="secondary" onClick={() => closeSettingsThen(copyDisplayLink)}>⧉ Copy display link</button>
               </>}
               {room.displayCount > 0 && <p className="room-settings-note">{room.displayCount} shared display{room.displayCount === 1 ? "" : "s"} connected</p>}
+              <button type="button" className="secondary" onClick={toggleSound} disabled={!AUDIO_ENABLED} aria-pressed={AUDIO_ENABLED && soundOn} title={!AUDIO_ENABLED ? "Audio is temporarily disabled" : undefined}>{AUDIO_ENABLED ? (soundOn ? "🔊 Sound effects: On" : "🔇 Sound effects: Off") : "🔇 Sound effects: Temporarily off"}</button>
               <button type="button" className="danger" onClick={() => closeSettingsThen(leaveRoom)}>Leave room</button>
             </div>
           </details>
         </div>
       </div>
-      <details className="room-roster" key={playing ? "in-game" : "lobby"} open={!playing}>
+      <details className="room-roster" key={playing || inGameReady ? "in-game" : "lobby"} open={!playing && !inGameReady}>
         <summary>Players <span className="roster-hint">{playing ? "Tap to see who's here" : "Who's here"}</span></summary>
         <PlayerList players={room.players} currentPlayerId={party.currentPlayerId} isHost={isHost} onKick={kickPlayer} />
       </details>
@@ -82,9 +90,24 @@ export function RoomScreen({ party }: Props) {
         {playing && room.selectedGame === "funny_answers" ? (
           <FunnyGame room={room} privateState={party.funnyPrivate} playerId={party.currentPlayerId}
             isHost={isHost} connected={connected} busy={party.funnyBusy} onAction={party.runFunnyAction} />
+        ) : playing && room.selectedGame === "last_word" ? (
+          <LastWordGame room={room} playerId={party.currentPlayerId} isHost={isHost} connected={connected} onAction={party.runLastWordAction}/>
+        ) : room.phase === "instructions" && room.selectedGame === "funny_answers" ? (
+          <FunnyReady room={room} playerId={party.currentPlayerId} isHost={isHost} disabled={!connected || gameActionBusy}
+            onAction={(event,payload)=>{
+              if(event==="funny_start") party.runFunnyAction(event,payload as number);
+              else if(payload!==undefined) party.runLastWordAction(event,payload);
+              else runGameAction(event);
+            }}/>
+        ) : room.phase === "instructions" && room.selectedGame === "last_word" ? (
+          <LastWordSetup room={room} isHost={isHost} playerId={party.currentPlayerId}
+            disabled={!connected || gameActionBusy} onAction={(event,payload) => {
+              if (event === "back_to_game_selection") runGameAction(event);
+              else party.runLastWordAction(event,payload);
+            }} />
         ) : (
           <GamePhasePanel room={room} isHost={isHost} connected={connected} busy={gameActionBusy}
-            onAction={runGameAction} onSetRounds={(rounds) => party.runGameAction("set_game_rounds", rounds)} onStartFunny={(rounds) => party.runFunnyAction("funny_start", rounds)} />
+            onAction={runGameAction} onSetRounds={(rounds) => party.runGameAction("set_game_rounds", rounds)} />
         )}
       </div>
     </section>

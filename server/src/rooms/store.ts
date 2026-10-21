@@ -3,6 +3,7 @@ import type { Server, Socket } from "socket.io";
 import { EMPTY_ROOM_IDLE_MS } from "../config";
 import { privateFunny, publicFunny, stopFunnyTimer } from "../games/funnyState";
 import { onFunnyHostDisconnected, onFunnyRosterChange } from "../games/funnyEngine";
+import { stopLastWord, syncPause } from "../games/lastWordEngine";
 import type { CharacterId, Player, Room } from "../types";
 import { generateFriendlyCode } from "./roomCodes";
 
@@ -55,6 +56,21 @@ export function publicRoom(room: Room) {
     selectedRounds: room.selectedRounds,
     serverNow: Date.now(),
     funny: publicFunny(room),
+    gameReady: room.gameReady ?? room.lastWordReady ?? {},
+    lastWordReady: room.lastWordReady ?? {},
+    lastWord: room.lastWord ? {
+      participants: room.lastWord.participants.map(({id,name,character,hearts,points,placement})=>({id,name,character,hearts,points,placement})),
+      order: room.lastWord.stage === "countdown" ? [] : room.lastWord.order,
+      stage: room.lastWord.stage, stageStartedAt: room.lastWord.stageStartedAt, stageDeadline: room.lastWord.stageDeadline,
+      turnDeadline: room.lastWord.turnDeadline, turnDurationMs: room.lastWord.turnDurationMs, turnNumber: room.lastWord.turnNumber,
+      activePlayerId: room.lastWord.stage === "countdown" || room.lastWord.stage === "pop" ? null : room.lastWord.order[room.lastWord.turnIndex],
+      pendingPlayerId: room.lastWord.pendingPlayerId, handoffFromPlayerId: room.lastWord.handoffFromPlayerId,
+      prompt: room.lastWord.stage === "turn" ? room.lastWord.prompt : "",
+      rule: room.lastWord.rule, levelName: room.lastWord.levelName, level: room.lastWord.level,
+      impactPlayerId: room.lastWord.impactPlayerId, impact: room.lastWord.impact,
+      awardIndex: room.lastWord.awardIndex, awards: room.lastWord.awards, winnerId: room.lastWord.winnerId,
+      paused: room.lastWord.paused, pausedRemaining: room.lastWord.pausedRemaining,
+    } : null,
     lastScoreboard: room.lastScoreboard,
   };
 }
@@ -84,6 +100,7 @@ export function refreshRoomIdleTimer(io: Server, room: Room) {
 function closeRoom(io: Server, room: Room) {
   if (room.idleTimer) clearTimeout(room.idleTimer);
   stopFunnyTimer(room.funny);
+  stopLastWord(room);
   io.to(room.code).emit("room_closed");
   for (const displayId of room.displays) {
     const displaySocket = io.sockets.sockets.get(displayId);
@@ -128,6 +145,7 @@ export function removePlayer(io: Server, room: Room, playerId: string) {
     promoteConnectedHost(room);
   }
   onFunnyRosterChange(io, room);
+  syncPause(io, room);
   refreshRoomIdleTimer(io, room);
   updateRoom(io, room);
 }
@@ -166,6 +184,7 @@ export function leaveRoom(io: Server, socket: Socket, grace = false) {
   if (room.players[0]?.id === playerId) onFunnyHostDisconnected(io, room);
   promoteConnectedHost(room);
   onFunnyRosterChange(io, room);
+  syncPause(io, room);
   refreshRoomIdleTimer(io, room);
   updateRoom(io, room);
   console.log(`${player.name} disconnected from ${code}; identity retained`);

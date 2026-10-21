@@ -62,11 +62,11 @@ function harness(count = 3) {
   const engine = load('games/funnyEngine');
   const prompts = load('games/funnyPrompts');
   const room = {
-    code: 'test-room', phase: 'selection', selectedGame: 'funny_answers',
+    code: 'test-room', phase: 'instructions', selectedGame: 'funny_answers',
     selectedRounds: 3, players: Array.from({ length: count }, (_, i) => ({
       id: `p${i + 1}`, name: `Player ${i + 1}`, character: 'scribble', socketId: `s${i + 1}`,
     })),
-    funny: null, lastScoreboard: null,
+    funny: null, lastScoreboard: null, gameReady: Object.fromEntries(Array.from({length:count},(_,i)=>[`p${i+1}`,true])),
   };
   const io = {};
   return { room, io, engine, state, prompts, clock, states };
@@ -270,4 +270,11 @@ test('kicked players are omitted from live and completed scoreboards without cha
   assert.equal(h.engine.closeFunnyGame(h.io, h.room), null);
   assert.deepEqual(h.room.lastScoreboard.scores.map(p => p.id), ['p1', 'p2', 'p3']);
   assert.deepEqual(h.room.lastScoreboard.scores.map(p => p.points), [2, 4, 1]);
+});
+
+test('Hot Take start requires shared Ready status from all connected participants',()=>{
+ const h=harness(3);h.room.gameReady.p2=false;
+ assert.match(h.engine.startFunny(h.io,h.room,3),/must be Ready/);
+ h.room.gameReady.p2=true;
+ assert.equal(h.engine.startFunny(h.io,h.room,3),null);
 });

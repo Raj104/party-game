@@ -79,7 +79,7 @@ export function FunnyGame({ room, privateState, playerId, isHost, connected, bus
         <section className="funny-stage-note"><p>{game.stage === "review" ? "Read the answers. Voting starts soon." : "The answers are appearing…"}</p></section>
       )}
       {isHost && game.stage === "finished" && (
-        <div className="funny-interaction"><button className="primary" disabled={disabled} onClick={() => onAction("funny_finish")}>Back to Game Selection</button></div>
+        <div className="funny-interaction funny-finish-actions"><button className="primary" disabled={disabled || room.players.filter(p=>p.connected).length<3 || room.players.filter(p=>p.connected).length>10} onClick={() => onAction("prepare_game_rematch")}>Play Hot Take Again</button><button className="secondary" disabled={disabled} onClick={() => onAction("funny_finish")}>Choose Another Game</button></div>
       )}
       {!isHost && game.stage === "finished" && <p className="muted">Waiting for the host to choose the next game...</p>}
     </div>

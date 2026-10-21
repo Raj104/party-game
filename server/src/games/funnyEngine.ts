@@ -42,7 +42,8 @@ function startPhaseTimer(game: FunnyState, ms: number, next: () => void) {
 }
 
 export function startFunny(io: Server, room: Room, totalRounds: number): string | null {
-  if ((room.phase !== "instructions" && room.phase !== "selection") || room.selectedGame !== "funny_answers") return "Select Funny Answers first.";
+  if (room.phase !== "instructions" || room.selectedGame !== "funny_answers") return "Open the Ready screen first.";
+  if(room.players.some(player=>player.socketId !== null && !(room.gameReady ?? {})[player.id])) return "All connected players must be Ready.";
   if (totalRounds !== 3 && totalRounds !== 5) return "Choose 3 or 5 rounds.";
   const players = room.players.filter((player) => player.socketId !== null);
   if (players.length < 3 || players.length > 10) return "Hot Take needs 3–10 connected players.";

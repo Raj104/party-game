@@ -1,6 +1,7 @@
 import { PlayerList } from "../components/PlayerList";
 import { ThemePicker } from "../components/ThemePicker";
 import { JoinQrCode } from "../components/JoinQrCode";
+import { LastWordGame } from "../games/LastWord/LastWordGame";
 import { FunnyDisplay } from "../games/FunnyAnswers/FunnyDisplay";
 import { findGame } from "../data/games";
 import { returnFromDisplay } from "../lib/session";
@@ -13,7 +14,7 @@ export function DisplayScreen({ room, connected, error, theme, onThemeChange }: 
   const selectedGame = room ? findGame(room.selectedGame) : undefined;
   const hostName = room?.players.find(player => player.isHost)?.name;
   const hostRoomTitle = hostName ? `${hostName}${/s$/i.test(hostName) ? "’" : "’s"} Room` : "Your Party Room";
-  const playing = room?.phase === "playing" && Boolean(room.funny);
+  const playing = room?.phase === "playing" && Boolean(room.funny || room.lastWord);
   return (
     <main className={`tv-screen${playing ? " tv-screen--playing" : ""}`}>
       <header className="tv-header">
@@ -25,7 +26,7 @@ export function DisplayScreen({ room, connected, error, theme, onThemeChange }: 
       </header>
       {room ? (
         <div className={`tv-content${playing ? " tv-content--game" : " tv-content--lobby"}`}>
-          {playing && room.funny ? <FunnyDisplay room={room} /> : (
+          {playing && room.lastWord ? <LastWordGame room={room} playerId={null} isHost={false} connected={connected} onAction={()=>{}} display/> : playing && room.funny ? <FunnyDisplay room={room} /> : (
             <>
               <div className="tv-lobby-hero">
                 <p className="tv-lobby-invite-label">JOIN THIS ROOM</p>
@@ -46,7 +47,7 @@ export function DisplayScreen({ room, connected, error, theme, onThemeChange }: 
                     <ul className="tv-game-instructions">
                       {selectedGame.instructions.map((item, index) => <li key={`${index}-${item}`}>{item}</li>)}
                     </ul>
-                    <p className="tv-waiting">{selectedGame.available ? `Host is setting up the game · ${room.selectedRounds} rounds` : "Coming soon · Host is previewing this game"}</p>
+                    <p className="tv-waiting">{selectedGame.available ? room.selectedGame === "last_word" ? "Players tap Ready · Host starts when everyone is ready" : `Host is setting up the game · ${room.selectedRounds} rounds` : "Coming soon · Host is previewing this game"}</p>
                   </div>
                 ) : (
                   <p className="tv-waiting">{room.phase === "lobby" ? "Waiting for the host to choose a game." : "Host is picking the next game."}</p>
